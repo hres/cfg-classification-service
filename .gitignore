@@ -1,0 +1,7 @@
+.metadata/
+bin
+out
+build
+classes
+.gradle
+tags
