@@ -22,10 +22,13 @@ public class ApplicationConfig extends Application {
         //this will register Jackson JSON providers
         resources.add(org.glassfish.jersey.jackson.JacksonFeature.class);
         resources.add(com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider.class);              
+        
+        
+        resources.add(ca.gc.ip346.classification.resource.ClassificationResource.class);
         //or we can do it manually:
         // resources.add( ca.gc.ip346.classification.provider.MyJacksonJsonProvider.class);
-        resources.add( ca.gc.ip346.classification.resource.FlagsResource.class);
-        resources.add( ca.gc.ip346.classification.resource.TierAdjustmentsResource.class);
+        //resources.add( ca.gc.ip346.classification.resource.FlagsResource.class);
+        //resources.add( ca.gc.ip346.classification.resource.TierAdjustmentsResource.class);
         //==> we could also choose packages, see below getProperties()
         System.out.println("Food Classification REST configuration ended successfully.");
         
@@ -53,5 +56,9 @@ public class ApplicationConfig extends Application {
         
         
         return properties;
-    }    
+    }
+    
+    
+    
+    
 }
