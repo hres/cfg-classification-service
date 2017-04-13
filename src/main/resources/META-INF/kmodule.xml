@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+    <kbase name="rules" packages="rules">
+        <ksession name="ksession-rules"/>
+    </kbase>
+    <kbase name="dtables.tier" packages="dtables.tier">
+        <ksession name="ksession-process-tiers"/>
+    </kbase>
+    <kbase name="dtables.flags" packages="dtables.flags">
+        <ksession name="ksession-process-flags"/>
+    </kbase>
+</kmodule>
