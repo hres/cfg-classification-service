@@ -31,7 +31,7 @@ public class ClassificationResource {
 		List<List<CanadaFoodGuideDataset>> foodResults = FoodClassificationEngine.foodClassificationEngine.classify(foods);
 		return foodResults;
 	}
-	
+
 	@GET
 	@Path("/test")
 	@Produces(MediaType.APPLICATION_JSON)
