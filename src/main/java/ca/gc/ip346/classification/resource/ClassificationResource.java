@@ -37,13 +37,22 @@ import ca.gc.ip346.classification.model.Dataset;
 
 public class ClassificationResource {
 
-	@GET
+	@POST
 	@Path("/classify")
+	@Consumes (MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public List<List<CanadaFoodGuideDataset>> classifyDataset(@BeanParam Dataset dataset) {
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 		List<List<CanadaFoodGuideDataset>> foodResults = FoodClassificationEngine.foodClassificationEngine.classify(foods);
 		return foodResults;
+	}
+	
+	@GET
+	@Path("/test")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public String test() {
+		return "Test suceeded";
 	}
 }
