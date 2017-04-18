@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
 
 import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
-import ca.gc.ip346.classification.model.FoodClassificationEngine;
+import ca.gc.ip346.classification.model.Dataset;
 
 public class ClassificationResource {
 
@@ -41,8 +41,9 @@ public class ClassificationResource {
 	@Path("/classify")
 	@Produces(MediaType.APPLICATION_JSON)
 	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public void classifyDataset(@BeanParam HashMap<String,String> foods) {
-		
-		//List<List<CanadaFoodGuideDataset>> foodResults = FoodClassificationEngine.foodClassificationEngine.classify(foods);
+	public List<List<CanadaFoodGuideDataset>> classifyDataset(@BeanParam Dataset dataset) {
+		List<CanadaFoodGuideDataset> foods = dataset.getData();
+		List<List<CanadaFoodGuideDataset>> foodResults = FoodClassificationEngine.foodClassificationEngine.classify(foods);
+		return foodResults;
 	}
 }

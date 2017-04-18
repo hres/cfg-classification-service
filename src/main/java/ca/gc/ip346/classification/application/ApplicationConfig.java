@@ -23,12 +23,7 @@ public class ApplicationConfig extends Application {
         resources.add(org.glassfish.jersey.jackson.JacksonFeature.class);
         resources.add(com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider.class);              
         
-        
         resources.add(ca.gc.ip346.classification.resource.ClassificationResource.class);
-        //or we can do it manually:
-        // resources.add( ca.gc.ip346.classification.provider.MyJacksonJsonProvider.class);
-        //resources.add( ca.gc.ip346.classification.resource.FlagsResource.class);
-        //resources.add( ca.gc.ip346.classification.resource.TierAdjustmentsResource.class);
         //==> we could also choose packages, see below getProperties()
         System.out.println("Food Classification REST configuration ended successfully.");
         
@@ -49,11 +44,6 @@ public class ApplicationConfig extends Application {
         //therefore we want to disable wadl (http://localhost:8080/service/application.wadl should return http 404)
         //see https://jersey.java.net/nonav/documentation/latest/user-guide.html#d0e9020 for details
         properties.put("jersey.config.server.wadl.disableWadl", true);
-        
-        //we could also use something like this instead of adding each of our resources
-        //explicitly in getClasses():
-        //properties.put("jersey.config.server.provider.packages", "com.nabisoft.tutorials.mavenstruts.service");
-        
         
         return properties;
     }

@@ -9,4 +9,13 @@
     <kbase name="dtables.flags" packages="dtables.flags">
         <ksession name="ksession-process-flags"/>
     </kbase>
+    <kbase name="dtables.refamt" packages="dtables.refamt">
+        <ksession name="ksession-process-refamt"/>
+    </kbase>
+    <kbase name="dtables.thresholds" packages="dtables.thresholds">
+        <ksession name="ksession-process-thresholds"/>
+    </kbase>
+    <kbase name="dtables.init" packages="dtables.init">
+        <ksession name="ksession-process-init"/>
+    </kbase>
 </kmodule>
