@@ -25,6 +25,7 @@ public class InitEngine {
 		KieServices ks = KieServices.Factory.get();
 		KieContainer kContainer = ks.getKieClasspathContainer();
 		kieSessionPipeline = new ArrayList<KieSession>();
+		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-shortcut"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-thresholds"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-init"));
 	}

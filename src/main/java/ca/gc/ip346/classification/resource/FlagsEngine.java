@@ -25,16 +25,21 @@ public class FlagsEngine {
 		KieServices ks = KieServices.Factory.get();
 		KieContainer kContainer = ks.getKieClasspathContainer();
 		kieSessionPipeline = new ArrayList<KieSession>();
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-flags"));
+		//kieSessionPipeline.add(kContainer.newKieSession("ksession-process-flags"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-refamt"));
 	}
 	
 	private void prepare(CanadaFoodGuideDataset food){
+		
+		/*
+		Removed due to removing flags table execution
+		
 		food.setContainsAddedFat(false);
 		food.setContainsAddedSodium(false);
 		food.setContainsAddedSugar(false);
 		food.setContainsAddedTransfat(false);
 		food.setContainsCaffeine(false);
+		*/
 		
 		//This is done as the FIRST prepare ONLY
 		food.setDone(false);
