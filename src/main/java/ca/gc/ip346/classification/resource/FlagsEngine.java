@@ -43,6 +43,7 @@ public class FlagsEngine {
 		
 		//This is done as the FIRST prepare ONLY
 		food.setDone(false);
+		food.setAbsolute(false);
 		food.setShift(0);
 	}
 	
