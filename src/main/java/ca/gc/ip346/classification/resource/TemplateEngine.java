@@ -8,45 +8,35 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
-public class InitEngine {
+public class TemplateEngine {
 	
-	public static InitEngine initEngine = new InitEngine();
+	public static TemplateEngine engine = new TemplateEngine();
 	//The pipeline is used to rule the drools rules one at a time
 	private List<KieSession> kieSessionPipeline;
 	private List<CanadaFoodGuideDataset> foodResults;
 	
 	//recreates singleton
 	public static void refreshEngine(){
-		initEngine = new InitEngine();
+		engine = new TemplateEngine();
 	}
 	
-	public InitEngine(){
+	public TemplateEngine(){
 		//taken from Wei Fang's code
 		KieServices ks = KieServices.Factory.get();
 		KieContainer kContainer = ks.getKieClasspathContainer();
 		kieSessionPipeline = new ArrayList<KieSession>();
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-thresholds"));
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-init"));
+		//kieSessionPipeline.add(kContainer.newKieSession("ksession-process-test"));
 	}
 	
-	public List<CanadaFoodGuideDataset> setInit(List<CanadaFoodGuideDataset> foods){
+	private void prepare(CanadaFoodGuideDataset food){
+	}
+	
+	public List<CanadaFoodGuideDataset> doSomething(List<CanadaFoodGuideDataset> foods){
 		foodResults = new ArrayList<>();
 		fireDrools(foods);
 		return foodResults;
 	}
 
-	
-	private void prepare(CanadaFoodGuideDataset food) {
-		food.setLowFat(false);
-		food.setLowSodium(false);
-		food.setLowSugar(false);
-		food.setHighFat(false);
-		food.setHighSatFat(false);
-		food.setHighSodium(false);
-		food.setHighSugar(false);
-		food.setTier(4);
-	}
-	
 	/*
 	 * Function: fireDrools
 	 *  Purpose: fire the drools rules and calculate
@@ -54,12 +44,12 @@ public class InitEngine {
 	*/
 	private void fireDrools(List<CanadaFoodGuideDataset> foods){
 		for(CanadaFoodGuideDataset food:foods){
-			prepare(food);
+			//set food properties from null to defaults (false?)
+			//prepare(food);
 			for(int i=0;i<kieSessionPipeline.size();i++){
-				if(!food.isDone()){
-					kieSessionPipeline.get(i).insert(food);
-					kieSessionPipeline.get(i).fireAllRules();
-				}
+				kieSessionPipeline.get(i).insert(food);
+				kieSessionPipeline.get(i).fireAllRules();
+				//do something at the end of every rule table run
 			}
 			foodResults.add(food);
 		}

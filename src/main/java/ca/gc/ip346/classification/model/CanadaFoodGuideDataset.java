@@ -50,7 +50,7 @@ public class CanadaFoodGuideDataset {
 	private Date      tier4ServingUpdateDate;             /* date             */
 	private Boolean   rolledUp;                           /* smallint         */
 	private Date      rolledUpUpdateDate;                 /* date             */
-	private Integer   applySmallRaAdjustment;             /* smallint         */
+	private Boolean   applySmallRaAdjustment;             /* smallint         */
 	private Integer   replacementCode;                    /* integer          */
 	private Date      commitDate;                         /* date             */
 	private String    comments;                           /* text             */
@@ -63,14 +63,24 @@ public class CanadaFoodGuideDataset {
 	private Boolean lowFat;
 	private Boolean highFat;
 	private Boolean highSatFat;
+	private Boolean lowTransFat;
+	private Boolean highTransFat;
 	private Double adjustedReferenceAmount;
 	private Double sodiumPerReferenceAmount;
 	private Double sugarPerReferenceAmount;
 	private Double fatPerReferenceAmount;
 	private Double satFatPerReferenceAmount;
+	private Double transFatPerReferenceAmount;
 	//checks to see if it has finished classification
 	private Boolean done;
 	private Integer tier;
+	private Integer shift;
+	private Boolean absolute;
+	
+	private Boolean satFatFopWarning;
+	private Boolean sugarFopWarning;
+	private Boolean sodiumFopWarning;
+	private Boolean mixedDishFopWarning;
 	
 	/**
 	 * @return the type
@@ -733,14 +743,14 @@ public class CanadaFoodGuideDataset {
 	/**
 	 * @return the applySmallRaAdjustment
 	 */
-	public Integer getApplySmallRaAdjustment() {
+	public Boolean getApplySmallRaAdjustment() {
 		return applySmallRaAdjustment;
 	}
 
 	/**
 	 * @param applySmallRaAdjustment the applySmallRaAdjustment to set
 	 */
-	public void setApplySmallRaAdjustment(Integer applySmallRaAdjustment) {
+	public void setApplySmallRaAdjustment(Boolean applySmallRaAdjustment) {
 		this.applySmallRaAdjustment = applySmallRaAdjustment;
 	}
 
@@ -838,6 +848,22 @@ public class CanadaFoodGuideDataset {
 	public Boolean isHighSatFat() {
 		return highSatFat;
 	}
+	
+	public Boolean isLowTransFat() {
+		return lowTransFat;
+	}
+
+	public void isLowTransFat(Boolean lowTransFat) {
+		this.lowTransFat = lowTransFat;
+	}
+
+	public Boolean isHighTransFat() {
+		return highTransFat;
+	}
+
+	public void isHighTransFat(Boolean highTransFat) {
+		this.highTransFat = highTransFat;
+	}
 
 	public void setHighSatFat(Boolean highSatFat) {
 		this.highSatFat = highSatFat;
@@ -882,6 +908,14 @@ public class CanadaFoodGuideDataset {
 	public void setSatFatPerReferenceAmount(Double satFatPerReferenceAmount) {
 		this.satFatPerReferenceAmount = satFatPerReferenceAmount;
 	}
+	
+	public Double getTransFatPerReferenceAmount() {
+		return transFatPerReferenceAmount;
+	}
+
+	public void setTransFatPerReferenceAmount(Double transFatPerReferenceAmount) {
+		this.transFatPerReferenceAmount = transFatPerReferenceAmount;
+	}
 
 	public Boolean isDone() {
 		return done;
@@ -901,10 +935,60 @@ public class CanadaFoodGuideDataset {
 	public void setAdjustedTier(Integer tier) {
 		this.tier = tier;
 		this.done = true;
+		this.absolute = true;
 	}
 	public void shiftTier(int shift) {
 		if(!done) {
 			this.tier+=shift;
+			this.shift+=shift;
 		}
+	}
+
+	public Integer getShift() {
+		return shift;
+	}
+
+	public void setShift(Integer shift) {
+		this.shift = shift;
+	}
+
+	public Boolean getAbsolute() {
+		return absolute;
+	}
+
+	public void setAbsolute(Boolean absolute) {
+		this.absolute = absolute;
+	}
+
+	public Boolean getSatFatFopWarning() {
+		return satFatFopWarning;
+	}
+
+	public void setSatFatFopWarning(Boolean satFatFopWarning) {
+		this.satFatFopWarning = satFatFopWarning;
+	}
+
+	public Boolean getSugarFopWarning() {
+		return sugarFopWarning;
+	}
+
+	public void setSugarFopWarning(Boolean sugarFopWarning) {
+		this.sugarFopWarning = sugarFopWarning;
+	}
+
+	public Boolean getSodiumFopWarning() {
+		return sodiumFopWarning;
+	}
+
+	public void setSodiumFopWarning(Boolean sodiumFopWarning) {
+		this.sodiumFopWarning = sodiumFopWarning;
+	}
+
+	public Boolean getMixedDishFopWarning() {
+		return mixedDishFopWarning;
+	}
+
+	public void setMixedDishFopWarning(Boolean mixedDishFopWarning) {
+		this.mixedDishFopWarning = mixedDishFopWarning;
 	}
 }

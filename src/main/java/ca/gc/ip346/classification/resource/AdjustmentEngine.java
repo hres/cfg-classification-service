@@ -42,8 +42,10 @@ public class AdjustmentEngine {
 	private void fireDrools(List<CanadaFoodGuideDataset> foods){
 		for(CanadaFoodGuideDataset food:foods){
 			for(int i=0;i<kieSessionPipeline.size();i++){
-				kieSessionPipeline.get(i).insert(food);
-				kieSessionPipeline.get(i).fireAllRules();
+				if(!food.isDone()){
+					kieSessionPipeline.get(i).insert(food);
+					kieSessionPipeline.get(i).fireAllRules();
+				}
 			}
 			food.setCfgCode(Integer.parseInt(String.valueOf(food.getCfgCode()).substring(0,3)+food.getTier()));
 			foodResults.add(food);

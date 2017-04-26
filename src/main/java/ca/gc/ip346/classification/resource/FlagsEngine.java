@@ -35,6 +35,10 @@ public class FlagsEngine {
 		food.setContainsAddedSugar(false);
 		food.setContainsAddedTransfat(false);
 		food.setContainsCaffeine(false);
+		
+		//This is done as the FIRST prepare ONLY
+		food.setDone(false);
+		food.setShift(0);
 	}
 	
 	public List<CanadaFoodGuideDataset> setFlags(List<CanadaFoodGuideDataset> foods){
@@ -48,6 +52,7 @@ public class FlagsEngine {
 		food.setSugarPerReferenceAmount(food.getSugarAmountPer100g()*food.getAdjustedReferenceAmount()/100);
 		food.setFatPerReferenceAmount(food.getTotalfatAmountPer100g()*food.getAdjustedReferenceAmount()/100);
 		food.setSatFatPerReferenceAmount(food.getSatfatAmountPer100g()*food.getAdjustedReferenceAmount()/100);
+		food.setTransFatPerReferenceAmount(food.getTransfatAmountPer100g()*food.getAdjustedReferenceAmount()/100);
 	}
 
 	/*
@@ -60,12 +65,14 @@ public class FlagsEngine {
 			prepare(food);
 			boolean setRA = false;
 			for(int i=0;i<kieSessionPipeline.size();i++){
-				kieSessionPipeline.get(i).insert(food);
-				kieSessionPipeline.get(i).fireAllRules();
-				//only call this after adjustedRA is set
-				if(!setRA && food.getAdjustedReferenceAmount()!= null){
-					calculatePerRA(food);
-					setRA = true;
+				if(!food.isDone()){
+					kieSessionPipeline.get(i).insert(food);
+					kieSessionPipeline.get(i).fireAllRules();
+					//only call this after adjustedRA is set
+					if(!setRA && food.getAdjustedReferenceAmount()!= null){
+						calculatePerRA(food);
+						setRA = true;
+					}
 				}
 			}
 			foodResults.add(food);
