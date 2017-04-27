@@ -853,7 +853,7 @@ public class CanadaFoodGuideDataset {
 		return lowTransFat;
 	}
 
-	public void isLowTransFat(Boolean lowTransFat) {
+	public void setLowTransFat(Boolean lowTransFat) {
 		this.lowTransFat = lowTransFat;
 	}
 
@@ -861,7 +861,7 @@ public class CanadaFoodGuideDataset {
 		return highTransFat;
 	}
 
-	public void isHighTransFat(Boolean highTransFat) {
+	public void setHighTransFat(Boolean highTransFat) {
 		this.highTransFat = highTransFat;
 	}
 

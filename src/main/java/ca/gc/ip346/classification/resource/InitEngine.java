@@ -45,6 +45,8 @@ public class InitEngine {
 		food.setHighSatFat(false);
 		food.setHighSodium(false);
 		food.setHighSugar(false);
+		food.setLowTransFat(false);
+		food.setHighTransFat(false);
 		food.setTier(4);
 	}
 	
