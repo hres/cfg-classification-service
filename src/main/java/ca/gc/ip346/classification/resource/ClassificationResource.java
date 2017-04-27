@@ -1,6 +1,8 @@
 package ca.gc.ip346.classification.resource;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,13 +24,15 @@ public class ClassificationResource {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	//@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public List<CanadaFoodGuideDataset> classifyDataset(Dataset dataset) {
+	public Map<String, Object> classifyDataset(Dataset dataset) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 		foods = FlagsEngine.flagsEngine.setFlags(foods);
 		foods = InitEngine.initEngine.setInit(foods);
 		foods = AdjustmentEngine.adjustmentEngine.adjust(foods);
 		List<CanadaFoodGuideDataset> foodResults = foods;
-		return foodResults;
+		map.put("data", foodResults);
+		return map;
 	}
 	
 	@POST
@@ -36,10 +40,12 @@ public class ClassificationResource {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	//@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public List<CanadaFoodGuideDataset> flagsDataset(Dataset dataset) {
+	public Map<String, Object> flagsDataset(Dataset dataset) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 		List<CanadaFoodGuideDataset> foodResults = FlagsEngine.flagsEngine.setFlags(foods);
-		return foodResults;
+		map.put("data", foodResults);
+		return map;
 	}
 	
 	@POST
@@ -47,10 +53,12 @@ public class ClassificationResource {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	//@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public List<CanadaFoodGuideDataset> initDataset(Dataset dataset) {
+	public Map<String, Object> initDataset(Dataset dataset) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 		List<CanadaFoodGuideDataset> foodResults = InitEngine.initEngine.setInit(foods);
-		return foodResults;
+		map.put("data", foodResults);
+		return map;
 	}
 	
 	@POST
@@ -58,10 +66,12 @@ public class ClassificationResource {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	//@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public List<CanadaFoodGuideDataset> adjustmentDataset(Dataset dataset) {
+	public Map<String, Object> adjustmentDataset(Dataset dataset) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 		List<CanadaFoodGuideDataset> foodResults = AdjustmentEngine.adjustmentEngine.adjust(foods);
-		return foodResults;
+		map.put("data", foodResults);
+		return map;
 	}
 	
 	@GET
