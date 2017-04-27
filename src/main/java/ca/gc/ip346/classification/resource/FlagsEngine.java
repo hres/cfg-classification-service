@@ -43,6 +43,7 @@ public class FlagsEngine {
 		
 		//This is done as the FIRST prepare ONLY
 		food.setAdjustedReferenceAmount(food.getReferenceAmountG());
+		food.setFopAdjustedReferenceAmount(food.getReferenceAmountG());
 		calculatePerRA(food);
 		food.setDone(false);
 		food.setAbsolute(false);
