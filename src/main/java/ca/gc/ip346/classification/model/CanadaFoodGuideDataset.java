@@ -50,11 +50,16 @@ public class CanadaFoodGuideDataset {
 	private Date      tier4ServingUpdateDate;             /* date             */
 	private Boolean   rolledUp;                           /* smallint         */
 	private Date      rolledUpUpdateDate;                 /* date             */
-	private Boolean   applySmallRaAdjustment;             /* smallint         */
+	private Boolean   overrideSmallRaAdjustment;             /* smallint         */
 	private Integer   replacementCode;                    /* integer          */
 	private Date      commitDate;                         /* date             */
 	private String    comments;                           /* text             */
 
+	//special input
+	private Double sodiumDV;
+	private Double sugarDV;
+	private Double satFatDV;
+	
 	//added by Robin
 	private Boolean lowSodium;
 	private Boolean highSodium;
@@ -66,11 +71,14 @@ public class CanadaFoodGuideDataset {
 	private Boolean lowTransFat;
 	private Boolean highTransFat;
 	private Double adjustedReferenceAmount;
+	private Double fopAdjustedReferenceAmount;
 	private Double sodiumPerReferenceAmount;
 	private Double sugarPerReferenceAmount;
 	private Double fatPerReferenceAmount;
 	private Double satFatPerReferenceAmount;
 	private Double transFatPerReferenceAmount;
+	private Double fopSugarPerReferenceAmount;
+	private Double fopSodiumPerReferenceAmount;
 	//checks to see if it has finished classification
 	private Boolean done;
 	private Integer tier;
@@ -80,7 +88,7 @@ public class CanadaFoodGuideDataset {
 	private Boolean satFatFopWarning;
 	private Boolean sugarFopWarning;
 	private Boolean sodiumFopWarning;
-	private Boolean mixedDishFopWarning;
+	private Boolean marketedToKids;
 	
 	/**
 	 * @return the type
@@ -743,15 +751,15 @@ public class CanadaFoodGuideDataset {
 	/**
 	 * @return the applySmallRaAdjustment
 	 */
-	public Boolean getApplySmallRaAdjustment() {
-		return applySmallRaAdjustment;
+	public Boolean getOverrideSmallRaAdjustment() {
+		return overrideSmallRaAdjustment;
 	}
 
 	/**
 	 * @param applySmallRaAdjustment the applySmallRaAdjustment to set
 	 */
-	public void setApplySmallRaAdjustment(Boolean applySmallRaAdjustment) {
-		this.applySmallRaAdjustment = applySmallRaAdjustment;
+	public void setOverrideSmallRaAdjustment(Boolean applySmallRaAdjustment) {
+		this.overrideSmallRaAdjustment = applySmallRaAdjustment;
 	}
 
 	/**
@@ -984,11 +992,59 @@ public class CanadaFoodGuideDataset {
 		this.sodiumFopWarning = sodiumFopWarning;
 	}
 
-	public Boolean getMixedDishFopWarning() {
-		return mixedDishFopWarning;
+	public Double getFopSugarPerReferenceAmount() {
+		return fopSugarPerReferenceAmount;
 	}
 
-	public void setMixedDishFopWarning(Boolean mixedDishFopWarning) {
-		this.mixedDishFopWarning = mixedDishFopWarning;
+	public void setFopSugarPerReferenceAmount(Double fopSugarPerReferenceAmount) {
+		this.fopSugarPerReferenceAmount = fopSugarPerReferenceAmount;
+	}
+
+	public Double getFopSodiumPerReferenceAmount() {
+		return fopSodiumPerReferenceAmount;
+	}
+
+	public void setFopSodiumPerReferenceAmount(Double fopSodiumPerReferenceAmount) {
+		this.fopSodiumPerReferenceAmount = fopSodiumPerReferenceAmount;
+	}
+
+	public Double getFopAdjustedReferenceAmount() {
+		return fopAdjustedReferenceAmount;
+	}
+
+	public void setFopAdjustedReferenceAmount(Double fopAdjustedReferenceAmount) {
+		this.fopAdjustedReferenceAmount = fopAdjustedReferenceAmount;
+	}
+
+	public Boolean getMarketedToKids() {
+		return marketedToKids;
+	}
+
+	public void setMarketedToKids(Boolean marketedToKids) {
+		this.marketedToKids = marketedToKids;
+	}
+
+	public Double getSodiumDV() {
+		return sodiumDV;
+	}
+
+	public void setSodiumDV(Double sodiumDV) {
+		this.sodiumDV = sodiumDV;
+	}
+
+	public Double getSatFatDV() {
+		return satFatDV;
+	}
+
+	public void setSatFatDV(Double satFatDV) {
+		this.satFatDV = satFatDV;
+	}
+
+	public Double getSugarDV() {
+		return sugarDV;
+	}
+
+	public void setSugarDV(Double sugarDV) {
+		this.sugarDV = sugarDV;
 	}
 }

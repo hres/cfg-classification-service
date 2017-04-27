@@ -42,6 +42,8 @@ public class FlagsEngine {
 		*/
 		
 		//This is done as the FIRST prepare ONLY
+		food.setAdjustedReferenceAmount(food.getReferenceAmountG());
+		calculatePerRA(food);
 		food.setDone(false);
 		food.setAbsolute(false);
 		food.setShift(0);
@@ -59,6 +61,8 @@ public class FlagsEngine {
 		food.setFatPerReferenceAmount(food.getTotalfatAmountPer100g()*food.getAdjustedReferenceAmount()/100);
 		food.setSatFatPerReferenceAmount(food.getSatfatAmountPer100g()*food.getAdjustedReferenceAmount()/100);
 		food.setTransFatPerReferenceAmount(food.getTransfatAmountPer100g()*food.getAdjustedReferenceAmount()/100);
+		food.setFopSodiumPerReferenceAmount(food.getSodiumAmountPer100g()*food.getFopAdjustedReferenceAmount()/100);
+		food.setFopSugarPerReferenceAmount(food.getSugarAmountPer100g()*food.getFopAdjustedReferenceAmount()/100);
 	}
 
 	/*
@@ -75,10 +79,7 @@ public class FlagsEngine {
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
 					//only call this after adjustedRA is set
-					if(!setRA && food.getAdjustedReferenceAmount()!= null){
-						calculatePerRA(food);
-						setRA = true;
-					}
+					calculatePerRA(food);
 				}
 			}
 			foodResults.add(food);
