@@ -21,4 +21,10 @@
     <kbase name="dtables.shortcut" packages="dtables.shortcut">
         <ksession name="ksession-process-shortcut"/>
     </kbase>
+    <kbase name="dtables.default" packages="dtables.default">
+        <ksession name="ksession-process-default"/>
+    </kbase>
+    <kbase name="dtables.fop" packages="dtables.fop">
+        <ksession name="ksession-process-fop"/>
+    </kbase>
 </kmodule>
