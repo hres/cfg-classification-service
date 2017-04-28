@@ -25,7 +25,7 @@ public class InitEngine {
 		KieServices ks = KieServices.Factory.get();
 		KieContainer kContainer = ks.getKieClasspathContainer();
 		kieSessionPipeline = new ArrayList<KieSession>();
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-default"));
+		// kieSessionPipeline.add(kContainer.newKieSession("ksession-process-default"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-fop"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-shortcut"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-thresholds"));
@@ -53,6 +53,9 @@ public class InitEngine {
 		food.setSugarFopWarning(false);
 		food.setSatFatFopWarning(false);
 		food.setTier(4);
+		food.setSugarDV(15.0);
+		food.setSodiumDV(15.0);
+		food.setSatFatDV(15.0);
 	}
 	
 	/*
