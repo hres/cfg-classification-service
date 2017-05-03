@@ -32,6 +32,12 @@ public class ClassificationResource {
 		foods = AdjustmentEngine.adjustmentEngine.adjust(foods);
 		List<CanadaFoodGuideDataset> foodResults = foods;
 		map.put("data", foodResults);
+		map.put("name",     dataset.getName());
+		dataset.setStatus("classified");
+		map.put("status",   dataset.getStatus());
+		map.put("env",      dataset.getEnv());
+		map.put("owner",    dataset.getOwner());
+		map.put("comments", dataset.getComments());
 		return map;
 	}
 	
