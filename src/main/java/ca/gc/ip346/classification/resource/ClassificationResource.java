@@ -11,6 +11,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
+
 import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
 import ca.gc.ip346.classification.model.Dataset;
 
@@ -23,7 +26,7 @@ public class ClassificationResource {
 	@Path("/classify")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	//@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Object> classifyDataset(Dataset dataset) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
@@ -31,9 +34,9 @@ public class ClassificationResource {
 		foods = InitEngine.initEngine.setInit(foods);
 		foods = AdjustmentEngine.adjustmentEngine.adjust(foods);
 		List<CanadaFoodGuideDataset> foodResults = foods;
-		map.put("data", foodResults);
-		map.put("name",     dataset.getName());
 		dataset.setStatus("classified");
+		map.put("data",     foodResults);
+		map.put("name",     dataset.getName());
 		map.put("status",   dataset.getStatus());
 		map.put("env",      dataset.getEnv());
 		map.put("owner",    dataset.getOwner());
