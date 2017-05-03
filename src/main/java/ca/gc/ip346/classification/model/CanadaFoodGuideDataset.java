@@ -67,6 +67,7 @@ public class CanadaFoodGuideDataset {
 	private Boolean highSugar;
 	private Boolean lowFat;
 	private Boolean highFat;
+	private Boolean lowSatFat;
 	private Boolean highSatFat;
 	private Boolean lowTransFat;
 	private Boolean highTransFat;
@@ -871,6 +872,20 @@ public class CanadaFoodGuideDataset {
 
 	public void setHighTransFat(Boolean highTransFat) {
 		this.highTransFat = highTransFat;
+	}
+
+	/**
+	 * @return the lowSatFat
+	 */
+	public Boolean isLowSatFat() {
+		return lowSatFat;
+	}
+
+	/**
+	 * @param lowSatFat the lowSatFat to set
+	 */
+	public void setLowSatFat(Boolean lowSatFat) {
+		this.lowSatFat = lowSatFat;
 	}
 
 	public void setHighSatFat(Boolean highSatFat) {
