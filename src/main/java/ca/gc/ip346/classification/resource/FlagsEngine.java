@@ -73,6 +73,7 @@ public class FlagsEngine {
 	 */
 	private void fireDrools(List<CanadaFoodGuideDataset> foods){
 		for(CanadaFoodGuideDataset food:foods){
+			food.setClassifiedCfgCode(food.getCfgCode());
 			prepare(food);
 			boolean setRA = false;
 			for(int i=0;i<kieSessionPipeline.size();i++){

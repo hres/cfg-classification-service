@@ -8,6 +8,7 @@ public class CanadaFoodGuideDataset {
 	private String    name;                               /* text             */
 	private Integer   cnfGroupCode;                       /* integer          */
 	private Integer   cfgCode;                            /* integer          */
+	private Integer   classifiedCfgCode;                  /* integer          */
 	private Date      cfgCodeUpdateDate;                  /* date             */
 	private Double    energyKcal;                         /* double precision */
 	private Double    sodiumAmountPer100g;                /* double precision */
@@ -159,6 +160,20 @@ public class CanadaFoodGuideDataset {
 	 */
 	public void setCfgCode(Integer cfgCode) {
 		this.cfgCode = cfgCode;
+	}
+
+	/**
+	 * @return the classifiedCfgCode
+	 */
+	public Integer getClassifiedCfgCode() {
+		return classifiedCfgCode;
+	}
+
+	/**
+	 * @param classifiedCfgCode the classifiedCfgCode to set
+	 */
+	public void setClassifiedCfgCode(Integer classifiedCfgCode) {
+		this.classifiedCfgCode = classifiedCfgCode;
 	}
 
 	/**

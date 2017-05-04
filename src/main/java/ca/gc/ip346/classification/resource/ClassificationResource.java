@@ -33,8 +33,9 @@ public class ClassificationResource {
 		foods = FlagsEngine.flagsEngine.setFlags(foods);
 		foods = InitEngine.initEngine.setInit(foods);
 		foods = AdjustmentEngine.adjustmentEngine.adjust(foods);
+		foods = prepareCfgCode(foods);
 		List<CanadaFoodGuideDataset> foodResults = foods;
-		dataset.setStatus("classified");
+		dataset.setStatus("Classified");
 		map.put("data",     foodResults);
 		map.put("name",     dataset.getName());
 		map.put("status",   dataset.getStatus());
@@ -89,5 +90,14 @@ public class ClassificationResource {
 	//@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public String test() {
 		return "Test suceeded";
+	}
+
+	private List<CanadaFoodGuideDataset> prepareCfgCode(List<CanadaFoodGuideDataset> foods) {
+		for (CanadaFoodGuideDataset food : foods) {
+			Integer temp = food.getCfgCode();
+			food.setCfgCode(food.getClassifiedCfgCode());
+			food.setClassifiedCfgCode(temp);
+		}
+		return foods;
 	}
 }
