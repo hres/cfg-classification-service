@@ -6,3 +6,4 @@ classes
 .gradle
 tags
 /target/
+*.sw[a-z]
