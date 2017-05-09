@@ -44,7 +44,7 @@ public class ClassificationResource {
 		map.put("comments", dataset.getComments());
 		return map;
 	}
-	
+
 	@POST
 	@Path("/flags")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -57,7 +57,7 @@ public class ClassificationResource {
 		map.put("data", foodResults);
 		return map;
 	}
-	
+
 	@POST
 	@Path("/init")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -70,7 +70,7 @@ public class ClassificationResource {
 		map.put("data", foodResults);
 		return map;
 	}
-	
+
 	@POST
 	@Path("/adjustment")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -83,7 +83,7 @@ public class ClassificationResource {
 		map.put("data", foodResults);
 		return map;
 	}
-	
+
 	@GET
 	@Path("/test")
 	@Produces(MediaType.APPLICATION_JSON)
