@@ -23,8 +23,7 @@ This POC uses the following components and features:
 ## Maven Build and Deployment
 
 1. mvn clean install
-2. rename target/*.war to food-classification-service-poc.war
-3. move food-classification-service-poc.war to webapps directory of tomcat 8
+2. move target/food-classification-service-poc.war to webapps directory of tomcat 8
 
 ## How to Test Service
 
