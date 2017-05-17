@@ -60,7 +60,7 @@ public class CanadaFoodGuideDataset {
 	private Double sodiumDV;
 	private Double sugarDV;
 	private Double satFatDV;
-	
+
 	//added by Robin
 	private Boolean lowSodium;
 	private Boolean highSodium;
@@ -86,12 +86,13 @@ public class CanadaFoodGuideDataset {
 	private Integer tier;
 	private Integer shift;
 	private Boolean absolute;
-	
+
 	private Boolean satFatFopWarning;
 	private Boolean sugarFopWarning;
 	private Boolean sodiumFopWarning;
 	private Boolean marketedToKids;
-	
+	private Integer initialCfgCode;
+
 	/**
 	 * @return the type
 	 */
@@ -828,7 +829,7 @@ public class CanadaFoodGuideDataset {
 	public void setLowSugar(Boolean lowSugar) {
 		this.lowSugar = lowSugar;
 	}
-	
+
 	public Boolean isHighSugar() {
 		return highSugar;
 	}
@@ -852,7 +853,7 @@ public class CanadaFoodGuideDataset {
 	public void setHighSodium(Boolean highSodium) {
 		this.highSodium = highSodium;
 	}
-	
+
 	public Boolean isLowFat() {
 		return lowFat;
 	}
@@ -872,7 +873,7 @@ public class CanadaFoodGuideDataset {
 	public Boolean isHighSatFat() {
 		return highSatFat;
 	}
-	
+
 	public Boolean isLowTransFat() {
 		return lowTransFat;
 	}
@@ -946,7 +947,7 @@ public class CanadaFoodGuideDataset {
 	public void setSatFatPerReferenceAmount(Double satFatPerReferenceAmount) {
 		this.satFatPerReferenceAmount = satFatPerReferenceAmount;
 	}
-	
+
 	public Double getTransFatPerReferenceAmount() {
 		return transFatPerReferenceAmount;
 	}
@@ -1052,6 +1053,20 @@ public class CanadaFoodGuideDataset {
 
 	public void setMarketedToKids(Boolean marketedToKids) {
 		this.marketedToKids = marketedToKids;
+	}
+
+	/**
+	 * @return the initialCfgCode
+	 */
+	public Integer getInitialCfgCode() {
+		return initialCfgCode;
+	}
+
+	/**
+	 * @param initialCfgCode the initialCfgCode to set
+	 */
+	public void setInitialCfgCode(Integer initialCfgCode) {
+		this.initialCfgCode = initialCfgCode;
 	}
 
 	public Double getSodiumDV() {
