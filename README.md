@@ -18,7 +18,12 @@ To deploy the [cfg-classification-services], do the following:
 4. `mvn clean install`
 5. copy `target/cfg-classification-service.war` to `webapps` directory of [Tomcat 8.0 on HRES]
 
+## Confirm Service is Running
+
+Run [Test]
+
 [//]: # (These are the references links used in the body of this note and get stripped out when the markdown processor does its thing.  There is no need to format nicely because it should not be seen.)
 
 [cfg-classification-services]: <https://github.com/hres/cfg-classification-service.git>
 [Tomcat 8.0 on HRES]: <https://java-dev.hres.ca>
+[Test]: <https://java-dev.hres.ca/cfg-classification-service/test>
