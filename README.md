@@ -1,4 +1,4 @@
-# Food Classification Service POC
+# Canada Food Guide Classification Service
 
 This project provides the Food Classification REST Service.
 The service uses Drools Decision Table to implement the classification rules.
