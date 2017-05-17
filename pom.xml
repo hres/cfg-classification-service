@@ -54,7 +54,7 @@
 	</repositories>
 
 	<build>
-		<finalName>food-classification-service-poc</finalName>
+		<finalName>cfg-classification-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
