@@ -16,11 +16,11 @@ public class AdjustmentEngine {
 	private List<CanadaFoodGuideDataset> foodResults;
 	
 	//recreates singleton
-	public static void refreshEngine(){
+	public static void refreshEngine() {
 		adjustmentEngine = new AdjustmentEngine();
 	}
 	
-	public AdjustmentEngine(){
+	public AdjustmentEngine() {
 		//taken from Wei Fang's code
 		KieServices ks = KieServices.Factory.get();
 		KieContainer kContainer = ks.getKieClasspathContainer();
@@ -28,7 +28,7 @@ public class AdjustmentEngine {
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-tiers"));
 	}
 	
-	public List<CanadaFoodGuideDataset> adjust(List<CanadaFoodGuideDataset> foods){
+	public List<CanadaFoodGuideDataset> adjust(List<CanadaFoodGuideDataset> foods) {
 		foodResults = new ArrayList<>();
 		fireDrools(foods);
 		return foodResults;
@@ -39,10 +39,10 @@ public class AdjustmentEngine {
 	 *  Purpose: fire the drools rules and calculate
 	 *       in: foods
 	*/
-	private void fireDrools(List<CanadaFoodGuideDataset> foods){
-		for(CanadaFoodGuideDataset food:foods){
-			for(int i=0;i<kieSessionPipeline.size();i++){
-				if(!food.isDone()){
+	private void fireDrools(List<CanadaFoodGuideDataset> foods) {
+		for (CanadaFoodGuideDataset food:foods) {
+			for (int i = 0; i < kieSessionPipeline.size(); i++) {
+				if (!food.isDone()) {
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
 				}

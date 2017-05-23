@@ -30,10 +30,12 @@ public class ClassificationResource {
 	public Map<String, Object> classifyDataset(Dataset dataset) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
-		foods = FlagsEngine.flagsEngine.setFlags(foods);
-		foods = InitEngine.initEngine.setInit(foods);
-		foods = AdjustmentEngine.adjustmentEngine.adjust(foods);
+
+		foods = FlagsEngine      .flagsEngine      .setFlags (foods);
+		foods = InitEngine       .initEngine       .setInit  (foods);
+		foods = AdjustmentEngine .adjustmentEngine .adjust   (foods);
 		foods = prepareCfgCode(foods);
+
 		List<CanadaFoodGuideDataset> foodResults = foods;
 		dataset.setStatus("Classified");
 		map.put("data",     foodResults);
