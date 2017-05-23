@@ -1,30 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kmodule [
+	<!ELEMENT kmodule  (kbase+)>
+	<!ELEMENT kbase    (ksession)>
+	<!ELEMENT ksession EMPTY>
+	<!ATTLIST kmodule  xmlns    CDATA #REQUIRED>
+	<!ATTLIST kbase    name     CDATA #REQUIRED>
+	<!ATTLIST kbase    packages CDATA #REQUIRED>
+	<!ATTLIST ksession name     CDATA #REQUIRED>
+]>
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-    <kbase name="rules" packages="rules">
-        <ksession name="ksession-rules"/>
-    </kbase>
-    <kbase name="dtables.tier" packages="dtables.tier">
-        <ksession name="ksession-process-tiers"/>
-    </kbase>
-    <kbase name="dtables.flags" packages="dtables.flags">
-        <ksession name="ksession-process-flags"/>
-    </kbase>
-    <kbase name="dtables.refamt" packages="dtables.refamt">
-        <ksession name="ksession-process-refamt"/>
-    </kbase>
-    <kbase name="dtables.thresholds" packages="dtables.thresholds">
-        <ksession name="ksession-process-thresholds"/>
-    </kbase>
-    <kbase name="dtables.init" packages="dtables.init">
-        <ksession name="ksession-process-init"/>
-    </kbase>
-    <kbase name="dtables.shortcut" packages="dtables.shortcut">
-        <ksession name="ksession-process-shortcut"/>
-    </kbase>
-    <kbase name="dtables.default" packages="dtables.default">
-        <ksession name="ksession-process-default"/>
-    </kbase>
-    <kbase name="dtables.fop" packages="dtables.fop">
-        <ksession name="ksession-process-fop"/>
-    </kbase>
+	<kbase name="rules" packages="rules">
+		<ksession name="ksession-rules"/>
+	</kbase>
+	<kbase name="dtables.tier" packages="dtables.tier">
+		<ksession name="ksession-process-tiers"/>
+	</kbase>
+	<kbase name="dtables.flags" packages="dtables.flags">
+		<ksession name="ksession-process-flags"/>
+	</kbase>
+	<kbase name="dtables.refamt" packages="dtables.refamt">
+		<ksession name="ksession-process-refamt"/>
+	</kbase>
+	<kbase name="dtables.thresholds" packages="dtables.thresholds">
+		<ksession name="ksession-process-thresholds"/>
+	</kbase>
+	<kbase name="dtables.init" packages="dtables.init">
+		<ksession name="ksession-process-init"/>
+	</kbase>
+	<kbase name="dtables.shortcut" packages="dtables.shortcut">
+		<ksession name="ksession-process-shortcut"/>
+	</kbase>
+	<kbase name="dtables.default" packages="dtables.default">
+		<ksession name="ksession-process-default"/>
+	</kbase>
+	<kbase name="dtables.fop" packages="dtables.fop">
+		<ksession name="ksession-process-fop"/>
+	</kbase>
 </kmodule>
