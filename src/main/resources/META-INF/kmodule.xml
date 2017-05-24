@@ -1,13 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE kmodule [
-	<!ELEMENT kmodule  (kbase+)>
-	<!ELEMENT kbase    (ksession)>
-	<!ELEMENT ksession EMPTY>
-	<!ATTLIST kmodule  xmlns    CDATA #REQUIRED>
-	<!ATTLIST kbase    name     CDATA #REQUIRED>
-	<!ATTLIST kbase    packages CDATA #REQUIRED>
-	<!ATTLIST ksession name     CDATA #REQUIRED>
-]>
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
 	<kbase name="rules" packages="rules">
 		<ksession name="ksession-rules"/>
