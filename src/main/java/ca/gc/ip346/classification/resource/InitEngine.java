@@ -3,6 +3,8 @@ package ca.gc.ip346.classification.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.kie.api.KieServices;
 import org.kie.api.cdi.KSession;
 import org.kie.api.runtime.KieContainer;
@@ -11,6 +13,7 @@ import org.kie.api.runtime.KieSession;
 import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
 
 public class InitEngine {
+	private static final Logger logger = LogManager.getLogger(InitEngine.class);
 
 	public static InitEngine initEngine = new InitEngine();
 	/* The pipeline is used to rule the drools rules one at a time */
@@ -73,6 +76,10 @@ public class InitEngine {
 					kieSessionPipeline.get(i).fireAllRules();
 				}
 			}
+			logger.error("[01;03;31m" + "CFG code: " + food.getCfgCode() + " tier: " + food.getTier() + "[00;00m");
+			String firstThreeDigits = food.getCfgCode() + "";
+			food.setInitialCfgCode(Integer.parseInt(firstThreeDigits.substring(0, 3) + food.getTier()));
+			logger.error("[01;03;31m" + "initial CFG code: " + food.getInitialCfgCode() + "[00;00m");
 			foodResults.add(food);
 		}
 	}

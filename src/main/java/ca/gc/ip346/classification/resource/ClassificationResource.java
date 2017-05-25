@@ -31,9 +31,9 @@ public class ClassificationResource {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 
-		foods = FlagsEngine      .flagsEngine      .setFlags (foods);
-		foods = InitEngine       .initEngine       .setInit  (foods);
-		foods = AdjustmentEngine .adjustmentEngine .adjust   (foods);
+		foods = FlagsEngine      .flagsEngine      .setFlags (foods); // Step 1: RA Adjustment
+		foods = InitEngine       .initEngine       .setInit  (foods); // Step 2: Threshold Rule
+		foods = AdjustmentEngine .adjustmentEngine .adjust   (foods); // Step 3: Adjustments
 		foods = prepareCfgCode(foods);
 
 		List<CanadaFoodGuideDataset> foodResults = foods;
