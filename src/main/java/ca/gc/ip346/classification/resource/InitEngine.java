@@ -44,18 +44,26 @@ public class InitEngine {
 	}
 
 	private void prepare(CanadaFoodGuideDataset food) {
-		food.setLowFat           (false);
+
 		food.setLowSodium        (false);
-		food.setLowSugar         (false);
-		food.setHighFat          (false);
-		food.setHighSatFat       (false);
 		food.setHighSodium       (false);
+
+		food.setLowSugar         (false);
 		food.setHighSugar        (false);
+
+		food.setLowFat           (false);
+		food.setHighFat          (false);
+
+		food.setLowSatFat        (false);
+		food.setHighSatFat       (false);
+
 		food.setLowTransFat      (false);
 		food.setHighTransFat     (false);
+
 		food.setSodiumFopWarning (false);
 		food.setSugarFopWarning  (false);
 		food.setSatFatFopWarning (false);
+
 		food.setTier             (4);
 		food.setSugarDV          (15.0);
 		food.setSodiumDV         (15.0);
