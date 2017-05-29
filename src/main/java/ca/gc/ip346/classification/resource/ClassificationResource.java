@@ -90,8 +90,10 @@ public class ClassificationResource {
 	@Path("/test")
 	@Produces(MediaType.APPLICATION_JSON)
 	//@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public String test() {
-		return "Test suceeded";
+	public Map<String, String> test() {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("msg","Test suceeded" );
+		return map;
 	}
 
 	private List<CanadaFoodGuideDataset> prepareCfgCode(List<CanadaFoodGuideDataset> foods) {
