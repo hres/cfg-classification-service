@@ -23,9 +23,9 @@ public class CanadaFoodGuideDataset {
 	private Double    satfatAmountPer100g;                /* double precision */
 	private String    satfatImputationReference;          /* text             */
 	private Date      satfatImputationDate;               /* date             */
-	private Double    totalfatAmountPer100g;              /* double precision */
-	private String    totalfatImputationReference;        /* text             */
-	private Date      totalfatImputationDate;             /* date             */
+	private Double    totalFatAmountPer100g;              /* double precision */
+	private String    totalFatImputationReference;        /* text             */
+	private Date      totalFatImputationDate;             /* date             */
 	private Boolean   containsAddedSodium;                /* smallint         */
 	private Date      containsAddedSodiumUpdateDate;      /* date             */
 	private Boolean   containsAddedSugar;                 /* smallint         */
@@ -374,45 +374,45 @@ public class CanadaFoodGuideDataset {
 	}
 
 	/**
-	 * @return the totalfatAmountPer100g
+	 * @return the totalFatAmountPer100g
 	 */
-	public Double getTotalfatAmountPer100g() {
-		return totalfatAmountPer100g;
+	public Double getTotalFatAmountPer100g() {
+		return totalFatAmountPer100g;
 	}
 
 	/**
-	 * @param totalfatAmountPer100g the totalfatAmountPer100g to set
+	 * @param totalFatAmountPer100g the totalFatAmountPer100g to set
 	 */
-	public void setTotalfatAmountPer100g(Double totalfatAmountPer100g) {
-		this.totalfatAmountPer100g = totalfatAmountPer100g;
+	public void setTotalFatAmountPer100g(Double totalFatAmountPer100g) {
+		this.totalFatAmountPer100g = totalFatAmountPer100g;
 	}
 
 	/**
-	 * @return the totalfatImputationReference
+	 * @return the totalFatImputationReference
 	 */
-	public String getTotalfatImputationReference() {
-		return totalfatImputationReference;
+	public String getTotalFatImputationReference() {
+		return totalFatImputationReference;
 	}
 
 	/**
-	 * @param totalfatImputationReference the totalfatImputationReference to set
+	 * @param totalFatImputationReference the totalFatImputationReference to set
 	 */
-	public void setTotalfatImputationReference(String totalfatImputationReference) {
-		this.totalfatImputationReference = totalfatImputationReference;
+	public void setTotalFatImputationReference(String totalFatImputationReference) {
+		this.totalFatImputationReference = totalFatImputationReference;
 	}
 
 	/**
-	 * @return the totalfatImputationDate
+	 * @return the totalFatImputationDate
 	 */
-	public Date getTotalfatImputationDate() {
-		return totalfatImputationDate;
+	public Date getTotalFatImputationDate() {
+		return totalFatImputationDate;
 	}
 
 	/**
-	 * @param totalfatImputationDate the totalfatImputationDate to set
+	 * @param totalFatImputationDate the totalFatImputationDate to set
 	 */
-	public void setTotalfatImputationDate(Date totalfatImputationDate) {
-		this.totalfatImputationDate = totalfatImputationDate;
+	public void setTotalFatImputationDate(Date totalFatImputationDate) {
+		this.totalFatImputationDate = totalFatImputationDate;
 	}
 
 	/**
