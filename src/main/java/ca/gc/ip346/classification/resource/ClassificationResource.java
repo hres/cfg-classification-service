@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -21,6 +22,15 @@ import ca.gc.ip346.classification.model.Dataset;
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class ClassificationResource {
+	@OPTIONS
+	@Path("/classify")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Map<String, String> classifyDatasetPreflight() {
+		Map<String, String> msg = new HashMap<String, String>();
+		msg.put("message", "options-catch-all");
+		return msg;
+	}
 
 	@POST
 	@Path("/classify")
