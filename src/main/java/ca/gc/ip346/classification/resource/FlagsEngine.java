@@ -57,6 +57,7 @@ public class FlagsEngine {
 				if (!food.isDone()) {
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
+					logger.error("[01;03;31m" + kieSessionPipeline.size() + "[00;00m");
 					/* only call this after adjustedRA is set */
 					calculatePerRA(food);
 				}

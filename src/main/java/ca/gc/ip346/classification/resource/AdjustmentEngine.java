@@ -36,7 +36,7 @@ public class AdjustmentEngine {
 		KieServices ks          = KieServices.Factory.get();
 		KieContainer kContainer = ks.getKieClasspathContainer();
 		kieSessionPipeline      = new ArrayList<KieSession>();
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-tiers"));
+		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-tier"));
 
 
 
@@ -57,6 +57,7 @@ public class AdjustmentEngine {
 				if (!food.isDone()) {
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
+					logger.error("[01;03;31m" + kieSessionPipeline.size() + "[00;00m");
 
 
 				}

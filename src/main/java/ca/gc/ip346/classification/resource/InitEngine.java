@@ -57,10 +57,12 @@ public class InitEngine {
 				if (!food.isDone()) {
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
+					logger.error("[01;03;31m" + kieSessionPipeline.size() + "[00;00m");
 
 
 				}
 			}
+			logger.error("[01;03;31m" + "firing Drools" + "[00;00m");
 			logger.error("[01;03;31m" + "CFG code: " + food.getCfgCode() + " tier: " + food.getTier() + "[00;00m");
 			String firstThreeDigits = food.getCfgCode() + "";
 			food.setInitialCfgCode(Integer.parseInt(firstThreeDigits.substring(0, 3) + food.getTier()));
