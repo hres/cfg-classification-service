@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 // import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
@@ -77,6 +78,7 @@ public class ClassificationResource {
 		// Check to see if rulesets' identifiers exist in MongoDB and overwrite them if they don't
 
 		MongoCursor<Document> cursorDocMap = null;
+		List<String> rools = new ArrayList<String>();
 
 		for (String rule : rules) {
 			Boolean isNotValidRulesetId = true;
@@ -102,14 +104,15 @@ public class ClassificationResource {
 						eq("_id", id),
 						combine(
 							set("name", null),
-							set("comments", null),
 							currentDate("modifiedDate"))
 						);
-				rules.add(rules.indexOf(rule), id.toString());
+				rools.add(rules.indexOf(rule), id.toString());
+			} else {
+				rools.add(rules.indexOf(rule), rule);
 			}
 		}
 
-		logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
+		logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rools) + "[00;00m");
 	}
 
 	// @OPTIONS
@@ -155,6 +158,21 @@ public class ClassificationResource {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("rules", rules);
 		return map;
+	}
+
+	@DELETE
+	@Path("/rulesets")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public /* Response */ Map<String, String> deleteAllRulesets() {
+		collection.deleteMany(new Document());
+
+		mongoClient.close();
+
+		Map<String, String> msg = new HashMap<String, String>();
+		msg.put("message", "Successfully deleted all datasets");
+
+		return msg;
 	}
 
 	@POST
