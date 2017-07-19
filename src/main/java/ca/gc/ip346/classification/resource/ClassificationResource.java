@@ -1,5 +1,10 @@
 package ca.gc.ip346.classification.resource;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.currentDate;
+import static com.mongodb.client.model.Updates.set;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 
@@ -24,6 +30,7 @@ import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
 import com.google.gson.GsonBuilder;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 
 import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
 import ca.gc.ip346.classification.model.Dataset;
@@ -39,7 +46,10 @@ public class ClassificationResource {
 	private MongoCollection<Document> collection = null;
 
 	/**
-	 * obtain the complete set of rulesets from kmodule.xml
+	 *
+	 * Obtain the complete set of rulesets from kmodule.xml - a list of identifiers
+	 * Check to see if rulesets' identifiers exist in MongoDB and overwrite them if they don't
+	 *
 	 */
 	public ClassificationResource() {
 		mongoClient = MongoClientFactory.getMongoClient();
@@ -60,6 +70,43 @@ public class ClassificationResource {
 				rules.add(rule);
 			}
 			break;
+		}
+
+		logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
+
+		// Check to see if rulesets' identifiers exist in MongoDB and overwrite them if they don't
+
+		MongoCursor<Document> cursorDocMap = null;
+
+		for (String rule : rules) {
+			Boolean isNotValidRulesetId = true;
+
+			if (ObjectId.isValid(rule)) {
+				System.out.println("[01;31m" + "Valid hexadecimal representation of RulesetId " + rule + "[00;00m");
+
+				cursorDocMap = collection.find(new Document("_id", new ObjectId(rule))).iterator();
+				if (!cursorDocMap.hasNext()) {
+					// create new item and replace current rule value with new _id
+					isNotValidRulesetId = false;
+				}
+			}
+
+			if (isNotValidRulesetId) {
+				Document doc = new Document()
+					.append("name",     null)
+					.append("isProd",   null)
+					.append("location", null);
+				collection.insertOne(doc);
+				ObjectId id = (ObjectId)doc.get("_id");
+				collection.updateOne(
+						eq("_id", id),
+						combine(
+							set("name", null),
+							set("comments", null),
+							currentDate("modifiedDate"))
+						);
+				rules.add(rules.indexOf(rule), id.toString());
+			}
 		}
 
 		logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
