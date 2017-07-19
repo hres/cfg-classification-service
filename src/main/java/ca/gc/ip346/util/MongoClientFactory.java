@@ -9,7 +9,7 @@ import com.mongodb.MongoClient;
 public class MongoClientFactory {
 	private static Properties getProps() throws IOException {
 		Properties props = new Properties();
-		InputStream in   = DBConnection.class.getClassLoader().getResourceAsStream("ca/gc/ip346/util/mongodb.properties");
+		InputStream in   = MongoClientFactory.class.getClassLoader().getResourceAsStream("ca/gc/ip346/util/mongodb.properties");
 		props.load(in);
 		in.close();
 		return props;

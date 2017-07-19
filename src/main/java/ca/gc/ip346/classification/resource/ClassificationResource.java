@@ -15,27 +15,37 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
 import com.google.gson.GsonBuilder;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 
 import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
 import ca.gc.ip346.classification.model.Dataset;
+import ca.gc.ip346.util.MongoClientFactory;
 
 @Path("/")
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class ClassificationResource {
-	private static final Logger logger = LogManager.getLogger(ClassificationResource.class);
-	private List<String> rules = null;
+	private static final Logger logger           = LogManager.getLogger(ClassificationResource.class);
+	private List<String> rules                   = null;
+	private MongoClient mongoClient              = null;
+	private MongoCollection<Document> collection = null;
 
 	/**
 	 * obtain the complete set of rulesets from kmodule.xml
 	 */
 	public ClassificationResource() {
+		mongoClient = MongoClientFactory.getMongoClient();
+		collection  = mongoClient.getDatabase(MongoClientFactory.getDatabase()).getCollection(MongoClientFactory.getCollection());
+		logger.error("[01;03;31m" + "mongo connectivity test: " + mongoClient.getDB(MongoClientFactory.getDatabase()).command("buildInfo").getString("version") + "[00;00m");
+
 		rules = new ArrayList<String>();
 		KieServices ks          = KieServices.Factory.get();
 		KieContainer kContainer = ks.getKieClasspathContainer();
