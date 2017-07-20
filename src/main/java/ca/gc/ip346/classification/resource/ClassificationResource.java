@@ -78,7 +78,7 @@ public class ClassificationResource {
 		// Check to see if rulesets' identifiers exist in MongoDB and overwrite them if they don't
 
 		MongoCursor<Document> cursorDocMap = null;
-		List<String> rools = new ArrayList<String>();
+		List<String> ids = new ArrayList<String>();
 
 		for (String rule : rules) {
 			Boolean isNotValidRulesetId = true;
@@ -106,13 +106,13 @@ public class ClassificationResource {
 							set("name", null),
 							currentDate("modifiedDate"))
 						);
-				rools.add(rules.indexOf(rule), id.toString());
+				ids.add(rules.indexOf(rule), id.toString());
 			} else {
-				rools.add(rules.indexOf(rule), rule);
+				ids.add(rules.indexOf(rule), rule);
 			}
 		}
 
-		logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rools) + "[00;00m");
+		logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ids) + "[00;00m");
 	}
 
 	// @OPTIONS
