@@ -7,4 +7,3 @@ classes
 tags
 /target/
 *.sw[a-z]
-mongodb.properties
