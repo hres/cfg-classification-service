@@ -113,8 +113,6 @@ public class ClassificationResource {
 		}
 
 		logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ids) + "[00;00m");
-
-		mongoClient.close();
 	}
 
 	// @OPTIONS
