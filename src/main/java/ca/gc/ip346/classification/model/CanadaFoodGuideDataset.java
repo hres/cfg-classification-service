@@ -51,17 +51,20 @@ public class CanadaFoodGuideDataset {
 	private Date      tier4ServingUpdateDate;             /* date             */
 	private Boolean   rolledUp;                           /* smallint         */
 	private Date      rolledUpUpdateDate;                 /* date             */
-	private Boolean   overrideSmallRaAdjustment;             /* smallint         */
+	private Boolean   overrideSmallRaAdjustment;          /* smallint         */
 	private Integer   replacementCode;                    /* integer          */
 	private Date      commitDate;                         /* date             */
 	private String    comments;                           /* text             */
 
-	//special input
+	// remember that this food-item has been validated
+	private Boolean validated;
+
+	// special input
 	private Double sodiumDV;
 	private Double sugarDV;
 	private Double satFatDV;
 
-	//added by Robin
+	// added by Robin
 	private Boolean lowSodium;
 	private Boolean highSodium;
 	private Boolean lowSugar;
@@ -81,7 +84,7 @@ public class CanadaFoodGuideDataset {
 	private Double transFatPerReferenceAmount;
 	private Double fopSugarPerReferenceAmount;
 	private Double fopSodiumPerReferenceAmount;
-	//checks to see if it has finished classification
+	// checks to see if it has finished classification
 	private Boolean done;
 	private Integer tier;
 	private Integer shift;
@@ -821,7 +824,7 @@ public class CanadaFoodGuideDataset {
 		this.comments = comments;
 	}
 
-	//Setters and getters for Classification
+	// Setters and getters for Classification
 	public Boolean isLowSugar() {
 		return lowSugar;
 	}
@@ -1067,6 +1070,20 @@ public class CanadaFoodGuideDataset {
 	 */
 	public void setInitialCfgCode(Integer initialCfgCode) {
 		this.initialCfgCode = initialCfgCode;
+	}
+
+	/**
+	 * @return the validated
+	 */
+	public Boolean getValidated() {
+		return validated;
+	}
+
+	/**
+	 * @param validated the validated to set
+	 */
+	public void setValidated(Boolean validated) {
+		this.validated = validated;
 	}
 
 	public Double getSodiumDV() {
