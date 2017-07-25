@@ -6,7 +6,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kie.api.KieServices;
-import org.kie.api.cdi.KSession;
+import org.kie.api.builder.ReleaseId;
+// import org.kie.api.cdi.KSession;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -32,15 +33,25 @@ public class AdjustmentEngine {
 	}
 
 	public AdjustmentEngine() {
-		/* taken from Wei Fang's code */
+	}
+
+	/**
+	 * @param ruleset the ruleset to set
+	 * @return this instance
+	 */
+	public AdjustmentEngine setReleaseIdAndRuleset(ReleaseId releaseId, String ruleset) {
 		KieServices ks          = KieServices.Factory.get();
-		KieContainer kContainer = ks.getKieClasspathContainer();
+		// KieContainer kContainer = ks.getKieClasspathContainer();
+		KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-tier"));
+		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-tier"));
 
 
 
 
+		logger.error("[01;03;31m" + ruleset + "[00;00m");
+
+		return this;
 	}
 
 	/*
@@ -64,9 +75,41 @@ public class AdjustmentEngine {
 			}
 			logger.error("[01;03;31m" + "firing Drools" + "[00;00m");
 
+
+
 			food.setCfgCode(Integer.parseInt(String.valueOf(food.getCfgCode()).substring(0, 3) + food.getTier()));
+
 
 			foodResults.add(food);
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

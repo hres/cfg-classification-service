@@ -6,7 +6,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kie.api.KieServices;
-import org.kie.api.cdi.KSession;
+import org.kie.api.builder.ReleaseId;
+// import org.kie.api.cdi.KSession;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -32,15 +33,25 @@ public class FlagsEngine {
 	}
 
 	public FlagsEngine() {
-		/* taken from Wei Fang's code */
+	}
+
+	/**
+	 * @param ruleset the ruleset to set
+	 * @return this instance
+	 */
+	public FlagsEngine setReleaseIdAndRuleset(ReleaseId releaseId, String ruleset) {
 		KieServices ks          = KieServices.Factory.get();
-		KieContainer kContainer = ks.getKieClasspathContainer();
+		// KieContainer kContainer = ks.getKieClasspathContainer();
+		KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
-		// kieSessionPipeline.add(kContainer.newKieSession("ksession-process-flags"));
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-refamt"));
+		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-refamt"));
 
 
 
+
+		logger.error("[01;03;31m" + ruleset + "[00;00m");
+
+		return this;
 	}
 
 	/*
@@ -52,7 +63,7 @@ public class FlagsEngine {
 		for (CanadaFoodGuideDataset food : foods) {
 			food.setClassifiedCfgCode(food.getCfgCode());
 			prepare(food);
-			boolean setRA = false;
+			// boolean setRA = false;
 			for (int i = 0; i < kieSessionPipeline.size(); i++) {
 				if (!food.isDone()) {
 					kieSessionPipeline.get(i).insert(food);
@@ -63,6 +74,9 @@ public class FlagsEngine {
 				}
 			}
 			logger.error("[01;03;31m" + "firing Drools" + "[00;00m");
+
+
+
 
 
 

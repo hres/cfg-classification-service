@@ -6,7 +6,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kie.api.KieServices;
-import org.kie.api.cdi.KSession;
+import org.kie.api.builder.ReleaseId;
+// import org.kie.api.cdi.KSession;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -32,15 +33,25 @@ public class InitEngine {
 	}
 
 	public InitEngine() {
-		/* taken from Wei Fang's code */
+	}
+
+	/**
+	 * @param ruleset the ruleset to set
+	 * @return this instance
+	 */
+	public InitEngine setReleaseIdAndRuleset(ReleaseId releaseId, String ruleset) {
 		KieServices ks          = KieServices.Factory.get();
-		KieContainer kContainer = ks.getKieClasspathContainer();
+		// KieContainer kContainer = ks.getKieClasspathContainer();
+		KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
-		// kieSessionPipeline.add(kContainer.newKieSession("ksession-process-default"));
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-fop"));
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-shortcut"));
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-thresholds"));
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-init"));
+		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-fop"));
+		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-shortcut"));
+		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-thresholds"));
+		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-init"));
+
+		logger.error("[01;03;31m" + ruleset + "[00;00m");
+
+		return this;
 	}
 
 	/*
@@ -63,10 +74,12 @@ public class InitEngine {
 				}
 			}
 			logger.error("[01;03;31m" + "firing Drools" + "[00;00m");
+
 			logger.error("[01;03;31m" + "CFG code: " + food.getCfgCode() + " tier: " + food.getTier() + "[00;00m");
 			String firstThreeDigits = food.getCfgCode() + "";
 			food.setInitialCfgCode(Integer.parseInt(firstThreeDigits.substring(0, 3) + food.getTier()));
 			logger.error("[01;03;31m" + "initial CFG code: " + food.getInitialCfgCode() + "[00;00m");
+
 			foodResults.add(food);
 		}
 	}
@@ -97,4 +110,6 @@ public class InitEngine {
 		food.setSodiumDV         (15.0);
 		food.setSatFatDV         (15.0);
 	}
+
+
 }

@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-	<kbase name="dtables.tier" packages="dtables.tier">
-		<ksession name="ksession-process-tier"/>
-		<ksession name="ksession-process-01-tier"/>
-		<ksession name="ksession-process-02-tier"/>
-		<ksession name="ksession-process-03-tier"/>
-		<ksession name="ksession-process-04-tier"/>
-	</kbase>
-	<kbase name="dtables.flags" packages="dtables.flags">
-		<ksession name="ksession-process-flags"/>
-		<ksession name="ksession-process-01-flags"/>
-		<ksession name="ksession-process-02-flags"/>
-		<ksession name="ksession-process-03-flags"/>
-		<ksession name="ksession-process-04-flags"/>
-	</kbase>
-	<kbase name="dtables.refamt" packages="dtables.refamt">
-		<ksession name="ksession-process-refamt"/>
-		<ksession name="ksession-process-01-refamt"/>
-		<ksession name="ksession-process-02-refamt"/>
-		<ksession name="ksession-process-03-refamt"/>
-		<ksession name="ksession-process-04-refamt"/>
-	</kbase>
-	<kbase name="dtables.thresholds" packages="dtables.thresholds">
-		<ksession name="ksession-process-thresholds"/>
-		<ksession name="ksession-process-01-thresholds"/>
-		<ksession name="ksession-process-02-thresholds"/>
-		<ksession name="ksession-process-03-thresholds"/>
-		<ksession name="ksession-process-04-thresholds"/>
-	</kbase>
-	<kbase name="dtables.init" packages="dtables.init">
-		<ksession name="ksession-process-init"/>
-		<ksession name="ksession-process-01-init"/>
-		<ksession name="ksession-process-02-init"/>
-		<ksession name="ksession-process-03-init"/>
-		<ksession name="ksession-process-04-init"/>
-	</kbase>
-	<kbase name="dtables.shortcut" packages="dtables.shortcut">
-		<ksession name="ksession-process-shortcut"/>
-		<ksession name="ksession-process-01-shortcut"/>
-		<ksession name="ksession-process-02-shortcut"/>
-		<ksession name="ksession-process-03-shortcut"/>
-		<ksession name="ksession-process-04-shortcut"/>
-	</kbase>
-	<kbase name="dtables.default" packages="dtables.default">
-		<ksession name="ksession-process-default"/>
-		<ksession name="ksession-process-01-default"/>
-		<ksession name="ksession-process-02-default"/>
-		<ksession name="ksession-process-03-default"/>
-		<ksession name="ksession-process-04-default"/>
-	</kbase>
-	<kbase name="dtables.fop" packages="dtables.fop">
-		<ksession name="ksession-process-fop"/>
-		<ksession name="ksession-process-01-fop"/>
-		<ksession name="ksession-process-02-fop"/>
-		<ksession name="ksession-process-03-fop"/>
-		<ksession name="ksession-process-04-fop"/>
-	</kbase>
+	<!-- <kbase name="dtables.tier" packages="dtables.tier"> -->
+		<!-- <ksession name="ksession-process-tier"/> -->
+		<!-- <ksession name="ksession-process-01-tier"/> -->
+		<!-- <ksession name="ksession-process-02-tier"/> -->
+		<!-- <ksession name="ksession-process-03-tier"/> -->
+		<!-- <ksession name="ksession-process-04-tier"/> -->
+	<!-- </kbase> -->
+	<!-- <kbase name="dtables.flags" packages="dtables.flags"> -->
+		<!-- <ksession name="ksession-process-flags"/> -->
+		<!-- <ksession name="ksession-process-01-flags"/> -->
+		<!-- <ksession name="ksession-process-02-flags"/> -->
+		<!-- <ksession name="ksession-process-03-flags"/> -->
+		<!-- <ksession name="ksession-process-04-flags"/> -->
+	<!-- </kbase> -->
+	<!-- <kbase name="dtables.refamt" packages="dtables.refamt"> -->
+		<!-- <ksession name="ksession-process-refamt"/> -->
+		<!-- <ksession name="ksession-process-01-refamt"/> -->
+		<!-- <ksession name="ksession-process-02-refamt"/> -->
+		<!-- <ksession name="ksession-process-03-refamt"/> -->
+		<!-- <ksession name="ksession-process-04-refamt"/> -->
+	<!-- </kbase> -->
+	<!-- <kbase name="dtables.thresholds" packages="dtables.thresholds"> -->
+		<!-- <ksession name="ksession-process-thresholds"/> -->
+		<!-- <ksession name="ksession-process-01-thresholds"/> -->
+		<!-- <ksession name="ksession-process-02-thresholds"/> -->
+		<!-- <ksession name="ksession-process-03-thresholds"/> -->
+		<!-- <ksession name="ksession-process-04-thresholds"/> -->
+	<!-- </kbase> -->
+	<!-- <kbase name="dtables.init" packages="dtables.init"> -->
+		<!-- <ksession name="ksession-process-init"/> -->
+		<!-- <ksession name="ksession-process-01-init"/> -->
+		<!-- <ksession name="ksession-process-02-init"/> -->
+		<!-- <ksession name="ksession-process-03-init"/> -->
+		<!-- <ksession name="ksession-process-04-init"/> -->
+	<!-- </kbase> -->
+	<!-- <kbase name="dtables.shortcut" packages="dtables.shortcut"> -->
+		<!-- <ksession name="ksession-process-shortcut"/> -->
+		<!-- <ksession name="ksession-process-01-shortcut"/> -->
+		<!-- <ksession name="ksession-process-02-shortcut"/> -->
+		<!-- <ksession name="ksession-process-03-shortcut"/> -->
+		<!-- <ksession name="ksession-process-04-shortcut"/> -->
+	<!-- </kbase> -->
+	<!-- <kbase name="dtables.default" packages="dtables.default"> -->
+		<!-- <ksession name="ksession-process-default"/> -->
+		<!-- <ksession name="ksession-process-01-default"/> -->
+		<!-- <ksession name="ksession-process-02-default"/> -->
+		<!-- <ksession name="ksession-process-03-default"/> -->
+		<!-- <ksession name="ksession-process-04-default"/> -->
+	<!-- </kbase> -->
+	<!-- <kbase name="dtables.fop" packages="dtables.fop"> -->
+		<!-- <ksession name="ksession-process-fop"/> -->
+		<!-- <ksession name="ksession-process-01-fop"/> -->
+		<!-- <ksession name="ksession-process-02-fop"/> -->
+		<!-- <ksession name="ksession-process-03-fop"/> -->
+		<!-- <ksession name="ksession-process-04-fop"/> -->
+	<!-- </kbase> -->
 </kmodule>

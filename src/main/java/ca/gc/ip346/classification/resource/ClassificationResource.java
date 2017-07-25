@@ -24,6 +24,11 @@ import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.KieContainer;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -45,6 +50,7 @@ public class ClassificationResource {
 	private List<String> rules                   = null;
 	private MongoClient mongoClient              = null;
 	private MongoCollection<Document> collection = null;
+	private ReleaseId releaseId                  = null;
 
 	/**
 	 *
@@ -57,13 +63,36 @@ public class ClassificationResource {
 		collection  = mongoClient.getDatabase(MongoClientFactory.getDatabase()).getCollection(MongoClientFactory.getCollection());
 		logger.error("[01;03;31m" + "mongo connectivity test: " + mongoClient.getDB(MongoClientFactory.getDatabase()).command("buildInfo").getString("version") + "[00;00m");
 
-		rules = new ArrayList<String>();
+		rules                   = new ArrayList<String>();
 		KieServices ks          = KieServices.Factory.get();
-		KieContainer kContainer = ks.getKieClasspathContainer();
-		String pattern = "(\\S+)-\\w+";
 
-		logger.error("[01;03;31m\n" + "list out the complete set of rulesets" + "[00;00m");
-		logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames()) + "[00;00m");
+		KieModuleModel kieModuleModel    = ks.newKieModuleModel();
+		KieBaseModel kieBaseModel1       = kieModuleModel.newKieBaseModel("dtables.refamt");
+		KieBaseModel kieBaseModel2       = kieModuleModel.newKieBaseModel("dtables.fop");
+		KieBaseModel kieBaseModel3       = kieModuleModel.newKieBaseModel("dtables.shortcut");
+		KieBaseModel kieBaseModel4       = kieModuleModel.newKieBaseModel("dtables.thresholds");
+		KieBaseModel kieBaseModel5       = kieModuleModel.newKieBaseModel("dtables.init");
+		KieBaseModel kieBaseModel6       = kieModuleModel.newKieBaseModel("dtables.tier");
+
+		/* KieSessionModel kieSessionModel1 = */ kieBaseModel1.newKieSessionModel("ksession-process-refamt");
+		/* KieSessionModel kieSessionModel2 = */ kieBaseModel2.newKieSessionModel("ksession-process-fop");
+		/* KieSessionModel kieSessionModel3 = */ kieBaseModel3.newKieSessionModel("ksession-process-shortcut");
+		/* KieSessionModel kieSessionModel4 = */ kieBaseModel4.newKieSessionModel("ksession-process-thresholds");
+		/* KieSessionModel kieSessionModel5 = */ kieBaseModel5.newKieSessionModel("ksession-process-init");
+		/* KieSessionModel kieSessionModel6 = */ kieBaseModel6.newKieSessionModel("ksession-process-tier");
+
+		KieFileSystem kfs                = ks.newKieFileSystem();
+		kfs.writeKModuleXML(kieModuleModel.toXML());
+		this.releaseId = ks.newKieBuilder(kfs).buildAll().getKieModule().getReleaseId();
+
+		logger.error("[01;03;31m" + "\n" + (kieModuleModel.toXML()) + "[00;00m");
+
+		// KieContainer kContainer = ks.getKieClasspathContainer();
+		KieContainer kContainer = ks.newKieContainer(this.releaseId);
+		String pattern          = "(\\S+)-\\w+";
+
+		logger.error("[01;03;31m" + "list out the complete set of rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames()) + "[00;00m");
+
 		for (String kieBaseName : kContainer.getKieBaseNames()) {
 			logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName)) + "[00;00m");
 			for (String session : kContainer.getKieSessionNamesInKieBase(kieBaseName)) {
@@ -73,7 +102,7 @@ public class ClassificationResource {
 			break;
 		}
 
-		logger.error("[01;03;31m\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
+		logger.error("[01;03;31m" + "distinct rules:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
 
 		// Check to see if rulesets' identifiers exist in MongoDB and overwrite them if they don't
 
@@ -133,10 +162,15 @@ public class ClassificationResource {
 	public Map<String, Object> classifyDataset(Dataset dataset) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
+		// String ruleset = dataset.getRuleset();
+		String ruleset = "ksession-process";
 
-		foods = FlagsEngine      .flagsEngine      .setFlags (foods); // Step 1: RA Adjustment
-		foods = InitEngine       .initEngine       .setInit  (foods); // Step 2: Threshold Rule
-		foods = AdjustmentEngine .adjustmentEngine .adjust   (foods); // Step 3: Adjustments
+		/**
+		 * TODO: make the ruleset ID part of the Dataset and pass in the ruleset ID
+		 */
+		foods = FlagsEngine      .flagsEngine      .setReleaseIdAndRuleset(this.releaseId, ruleset) .setFlags (foods); // Step 1: RA Adjustment
+		foods = InitEngine       .initEngine       .setReleaseIdAndRuleset(this.releaseId, ruleset) .setInit  (foods); // Step 2: Threshold Rule
+		foods = AdjustmentEngine .adjustmentEngine .setReleaseIdAndRuleset(this.releaseId, ruleset) .adjust   (foods); // Step 3: Adjustments
 		foods = prepareCfgCode(foods);
 
 		List<CanadaFoodGuideDataset> foodResults = foods;
