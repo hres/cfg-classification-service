@@ -2,7 +2,7 @@
 
 This project provides the Food Classification REST Service.
 The service uses Drools Decision Table to implement the classification rules.
-This service along with the [cfg-task-services](CFG Task Service) run in tandem.
+This service along with the [CFG Task Service]([cfg-task-services]) run in tandem.
 
 ## Components and Features
 
