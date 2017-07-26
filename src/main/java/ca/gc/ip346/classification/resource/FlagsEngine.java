@@ -44,7 +44,7 @@ public class FlagsEngine {
 		// KieContainer kContainer = ks.getKieClasspathContainer();
 		KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
-		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-refamt"));
+		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-refamt"));
 
 
 

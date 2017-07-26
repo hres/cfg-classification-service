@@ -227,8 +227,10 @@ public class ClassificationResource {
 	public Map<String, Object> classifyDataset(Dataset dataset) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
-		// String ruleset = dataset.getRuleset();
-		String ruleset = "ksession-process";
+		String ruleset = dataset.getRuleset();
+		if (dataset.getEnv().equals("prod") || ObjectId.isValid(dataset.getRuleset())) {
+			ruleset = this.rules.get(0);
+		}
 
 		/**
 		 * TODO: make the ruleset ID part of the Dataset and pass in the ruleset ID

@@ -44,10 +44,10 @@ public class InitEngine {
 		// KieContainer kContainer = ks.getKieClasspathContainer();
 		KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
-		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-fop"));
-		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-shortcut"));
-		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-thresholds"));
-		kieSessionPipeline.add(kContainer.newKieSession(ruleset + "-init"));
+		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-fop"));
+		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-shortcut"));
+		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-thresholds"));
+		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-init"));
 
 		logger.error("[01;03;31m" + ruleset + "[00;00m");
 
