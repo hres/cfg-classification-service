@@ -16,6 +16,7 @@ import javax.ws.rs.GET;
 // import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -275,6 +276,40 @@ public class ClassificationResource {
 		}
 		result.put("rulesets", rulesets);
 		return result;
+	}
+
+	@GET
+	@Path("/rulesets/{id}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public Map<String, Object> getRulesets(@PathParam("id") String id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		MongoCursor<Document> cursorDocMap = collection.find(new Document("_id", new ObjectId(id))).iterator();
+		while (cursorDocMap.hasNext()) {
+			Document doc = cursorDocMap.next();
+			ObjectId identity = (ObjectId)doc.get("_id");
+			map.put("id", identity.toString());
+			String name = (String)doc.get("name");
+			map.put("name", name);
+			Boolean isProd = (Boolean)doc.get("isProd");
+			map.put("isProd", isProd);
+		}
+		return map;
+	}
+
+	@DELETE
+	@Path("/rulesets/{id}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public /* Response */ Map<String, Object> deleteRulesets(@PathParam("id") String id) {
+		Map<String, Object> msg = new HashMap<String, Object>();
+		MongoCursor<Document> cursorDocMap = collection.find(new Document("_id", new ObjectId(id))).iterator();
+		while (cursorDocMap.hasNext()) {
+			Document doc = cursorDocMap.next();
+			collection.deleteOne(doc);
+		}
+		msg.put("message", "Successfully deleted ruleset with id: " + id);
+		return msg;
 	}
 
 	@DELETE
