@@ -11,6 +11,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import com.google.gson.GsonBuilder;
+
 import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
 
 public class AdjustmentEngine {
@@ -41,14 +43,17 @@ public class AdjustmentEngine {
 	 */
 	public AdjustmentEngine setReleaseIdAndRuleset(ReleaseId releaseId, String ruleset) {
 		KieServices ks          = KieServices.Factory.get();
-		// KieContainer kContainer = ks.getKieClasspathContainer();
-		KieContainer kContainer = ks.newKieContainer(releaseId);
+		KieContainer kContainer = ks.getKieClasspathContainer();
+		// KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-tier"));
 
 
 
 
+
+
+		logger.error("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.tier")) + "[00;00m");
 		logger.error("[01;03;31m" + ruleset + "[00;00m");
 
 		return this;

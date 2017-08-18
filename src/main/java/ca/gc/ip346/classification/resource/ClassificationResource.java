@@ -20,6 +20,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import static org.apache.logging.log4j.Level.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -29,7 +31,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-// import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.builder.model.KieSessionModel;
+import static org.kie.api.conf.DeclarativeAgendaOption.*;
 import org.kie.api.runtime.KieContainer;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -68,12 +71,12 @@ public class ClassificationResource {
 		KieServices ks                = KieServices.Factory.get();
 		KieModuleModel kieModuleModel = ks.newKieModuleModel();
 
-		KieBaseModel kieBaseModel1 = kieModuleModel.newKieBaseModel("dtables.refamt")     .addPackage("dtables.refamt")     ;
-		KieBaseModel kieBaseModel2 = kieModuleModel.newKieBaseModel("dtables.fop")        .addPackage("dtables.fop")        ;
-		KieBaseModel kieBaseModel3 = kieModuleModel.newKieBaseModel("dtables.shortcut")   .addPackage("dtables.shortcut")   ;
-		KieBaseModel kieBaseModel4 = kieModuleModel.newKieBaseModel("dtables.thresholds") .addPackage("dtables.thresholds") ;
-		KieBaseModel kieBaseModel5 = kieModuleModel.newKieBaseModel("dtables.init")       .addPackage("dtables.init")       ;
-		KieBaseModel kieBaseModel6 = kieModuleModel.newKieBaseModel("dtables.tier")       .addPackage("dtables.tier")       ;
+		KieBaseModel kieBaseModel1 = kieModuleModel.newKieBaseModel("dtables.refamt")     .addPackage("dtables.refamt")     .setDeclarativeAgenda(ENABLED);
+		KieBaseModel kieBaseModel2 = kieModuleModel.newKieBaseModel("dtables.fop")        .addPackage("dtables.fop")        .setDeclarativeAgenda(ENABLED);
+		KieBaseModel kieBaseModel3 = kieModuleModel.newKieBaseModel("dtables.shortcut")   .addPackage("dtables.shortcut")   .setDeclarativeAgenda(ENABLED);
+		KieBaseModel kieBaseModel4 = kieModuleModel.newKieBaseModel("dtables.thresholds") .addPackage("dtables.thresholds") .setDeclarativeAgenda(ENABLED);
+		KieBaseModel kieBaseModel5 = kieModuleModel.newKieBaseModel("dtables.init")       .addPackage("dtables.init")       .setDeclarativeAgenda(ENABLED);
+		KieBaseModel kieBaseModel6 = kieModuleModel.newKieBaseModel("dtables.tier")       .addPackage("dtables.tier")       .setDeclarativeAgenda(ENABLED);
 
 		/* KieSessionModel kieSessionModel1 = */ kieBaseModel1.newKieSessionModel("ksession-process-refamt")     ;
 		/* KieSessionModel kieSessionModel2 = */ kieBaseModel2.newKieSessionModel("ksession-process-fop")        ;
@@ -83,14 +86,15 @@ public class ClassificationResource {
 		/* KieSessionModel kieSessionModel6 = */ kieBaseModel6.newKieSessionModel("ksession-process-tier")       ;
 
 		KieFileSystem kfs = ks.newKieFileSystem();
-		kfs.writeKModuleXML(kieModuleModel.toXML());
-		this.releaseId = ks.newKieBuilder(kfs).buildAll().getKieModule().getReleaseId();
+		// kfs.writeKModuleXML(kieModuleModel.toXML());
+		// ks.newKieBuilder(kfs).buildAll();
+		// this.releaseId = ks.getRepository().getDefaultReleaseId();
 
 		logger.error("[01;03;31m" + "\n" + (kieModuleModel.toXML()) + "[00;00m");
 
-		// KieContainer kContainer = ks.getKieClasspathContainer();
-		KieContainer kContainer = ks.newKieContainer(this.releaseId);
-		String pattern          = "(\\S+)-\\w+";
+		KieContainer kContainer = ks.getKieClasspathContainer();
+		// KieContainer kContainer = ks.newKieContainer(this.releaseId);
+		String pattern          = "ksession-process-(\\S+)-\\w+";
 
 		logger.error("[01;03;31m" + "list out the complete set of rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames()) + "[00;00m");
 
@@ -119,7 +123,7 @@ public class ClassificationResource {
 				Boolean isNotValidRulesetId = true;
 
 				if (ObjectId.isValid(rule)) {
-					System.out.println("[01;31m" + "Valid hexadecimal representation of RulesetId " + rule + "[00;00m");
+					logger.error("[01;31m" + "Valid hexadecimal representation of RulesetId " + rule + "[00;00m");
 
 					cursorDocMap = collection.find(new Document("_id", new ObjectId(rule))).iterator();
 					if (!cursorDocMap.hasNext()) {
@@ -155,6 +159,7 @@ public class ClassificationResource {
 				Document doc = cursorDocMap.next();
 				ObjectId id = (ObjectId)doc.get("_id");
 				ids.add(id.toString());
+				logger.error("[01;31m" + "Valid hexadecimal representation of RulesetId " + id + "[00;00m");
 			}
 		}
 
@@ -178,12 +183,12 @@ public class ClassificationResource {
 		ks             = KieServices.Factory.get();
 		kieModuleModel = ks.newKieModuleModel();
 
-		kieBaseModel1 = kieModuleModel.newKieBaseModel("dtables.refamt")     .addPackage("dtables.refamt")     ;
-		kieBaseModel2 = kieModuleModel.newKieBaseModel("dtables.fop")        .addPackage("dtables.fop")        ;
-		kieBaseModel3 = kieModuleModel.newKieBaseModel("dtables.shortcut")   .addPackage("dtables.shortcut")   ;
-		kieBaseModel4 = kieModuleModel.newKieBaseModel("dtables.thresholds") .addPackage("dtables.thresholds") ;
-		kieBaseModel5 = kieModuleModel.newKieBaseModel("dtables.init")       .addPackage("dtables.init")       ;
-		kieBaseModel6 = kieModuleModel.newKieBaseModel("dtables.tier")       .addPackage("dtables.tier")       ;
+		kieBaseModel1 = kieModuleModel.newKieBaseModel("dtables.refamt")     .addPackage("dtables.refamt")     .setDeclarativeAgenda(ENABLED) .setDefault(true);
+		kieBaseModel2 = kieModuleModel.newKieBaseModel("dtables.fop")        .addPackage("dtables.fop")        .setDeclarativeAgenda(ENABLED) .setDefault(true);
+		kieBaseModel3 = kieModuleModel.newKieBaseModel("dtables.shortcut")   .addPackage("dtables.shortcut")   .setDeclarativeAgenda(ENABLED) .setDefault(true);
+		kieBaseModel4 = kieModuleModel.newKieBaseModel("dtables.thresholds") .addPackage("dtables.thresholds") .setDeclarativeAgenda(ENABLED) .setDefault(true);
+		kieBaseModel5 = kieModuleModel.newKieBaseModel("dtables.init")       .addPackage("dtables.init")       .setDeclarativeAgenda(ENABLED) .setDefault(true);
+		kieBaseModel6 = kieModuleModel.newKieBaseModel("dtables.tier")       .addPackage("dtables.tier")       .setDeclarativeAgenda(ENABLED) .setDefault(true);
 
 		List<KieBaseModel> bases = new ArrayList<KieBaseModel>();
 
@@ -196,16 +201,21 @@ public class ClassificationResource {
 
 		for (int j = 0; j < categories.size(); ++j) {
 			for (int i = 0; i < ids.size(); ++i) {
-				bases.get(j).newKieSessionModel("ksession-process-" + ids.get(i) + "-" + categories.get(j));
+				logger.error("ksession-process-" + ids.get(i) + "-" + categories.get(j));
+				KieSessionModel kieSessionModel = bases.get(j).newKieSessionModel("ksession-process-" + ids.get(i) + "-" + categories.get(j));
+				if (i == 0) kieSessionModel.setDefault(true);
 			}
 		}
 
 		kfs = ks.newKieFileSystem();
 		kfs.writeKModuleXML(kieModuleModel.toXML());
+		// ks.newKieBuilder(kfs).buildAll();
+		// this.releaseId = ks.getRepository().getDefaultReleaseId();
+		this.releaseId = ks.newKieBuilder(kfs).buildAll().getKieModule().getReleaseId();
 
 		logger.error("[01;03;31m" + "\n" + (kieModuleModel.toXML()) + "[00;00m");
 
-		this.releaseId = ks.newKieBuilder(kfs).buildAll().buildAll().getKieModule().getReleaseId();
+		logger.error("[01;03;33m" + "release ID: " + this.releaseId + "[00;00m");
 
 		this.rules = ids;
 	}
@@ -229,8 +239,10 @@ public class ClassificationResource {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 		String ruleset = dataset.getRuleset();
+		logger.printf(ERROR, "%s%22s%s%s", "[01;03;35m", "passed-in ruleset id: ", ruleset, "[00;00m");
 		if (dataset.getEnv().equals("prod") || ObjectId.isValid(dataset.getRuleset())) {
 			ruleset = this.rules.get(0);
+			logger.printf(ERROR, "%s%22s%s%s", "[01;03;35m", "default ruleset id: ", ruleset, "[00;00m");
 		}
 
 		/**
@@ -249,6 +261,7 @@ public class ClassificationResource {
 		map.put("env",      dataset.getEnv());
 		map.put("owner",    dataset.getOwner());
 		map.put("comments", dataset.getComments());
+		map.put("ruleset",  dataset.getRuleset());
 		return map;
 	}
 
