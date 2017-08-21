@@ -975,14 +975,14 @@ public class CanadaFoodGuideDataset {
 		this.tier = tier;
 	}
 	public void setAdjustedTier(Integer tier) {
-		this.tier = tier;
-		this.done = true;
+		this.tier     = tier;
+		this.done     = true;
 		this.absolute = true;
 	}
 	public void shiftTier(int shift) {
-		if(!done) {
-			this.tier+=shift;
-			this.shift+=shift;
+		if (!done) {
+			this.tier  += shift;
+			this.shift += shift;
 		}
 	}
 
