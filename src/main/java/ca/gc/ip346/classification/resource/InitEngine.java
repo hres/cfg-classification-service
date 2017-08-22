@@ -76,6 +76,10 @@ public class InitEngine {
 					logger.error("[01;03;31m" + kieSessionPipeline.size() + "[00;00m");
 
 
+
+
+
+
 				}
 			}
 			logger.error("[01;03;31m" + "firing Drools" + "[00;00m");

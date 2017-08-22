@@ -3,6 +3,7 @@ package ca.gc.ip346.classification.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.logging.log4j.Level.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kie.api.KieServices;
@@ -46,7 +47,11 @@ public class AdjustmentEngine {
 		KieContainer kContainer = ks.getKieClasspathContainer();
 		// KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-tier"));
+		String kSessionName = "ksession-process-" + ruleset + "-tier";
+		logger.error("[01;03;35m" + "kSessionName: " + kSessionName + "[00;00m");
+		logger.error("[01;03;35m" + "ReleaseId: " + releaseId + "[00;00m");
+		logger.error("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt")) + "[00;00m");
+		kieSessionPipeline.add(kContainer.newKieSession(kSessionName));
 
 
 
@@ -54,7 +59,7 @@ public class AdjustmentEngine {
 
 
 		logger.error("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.tier")) + "[00;00m");
-		logger.error("[01;03;31m" + ruleset + "[00;00m");
+		logger.error("[01;03;31m" + "ksession-process-" + ruleset + "-tier" + "[00;00m");
 
 		return this;
 	}
@@ -73,9 +78,13 @@ public class AdjustmentEngine {
 				if (!food.isDone()) {
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
-					logger.error("[01;03;31m" + kieSessionPipeline.size() + "[00;00m");
 
 
+					logger.printf(ERROR, "%s%44s%s%s", "[01;03;31m", "how many rulesets: "                   , kieSessionPipeline.size()           , "[00;00m");
+					logger.printf(ERROR, "%s%44s%s%s", "[01;03;33m", "food.getReferenceAmountG(): "          , food.getReferenceAmountG()          , "[00;00m");
+					logger.printf(ERROR, "%s%44s%s%s", "[01;03;33m", "food.getOverrideSmallRaAdjustment(): " , food.getOverrideSmallRaAdjustment() , "[00;00m");
+					logger.printf(ERROR, "%s%44s%s%s", "[01;03;33m", "food.getAdjustedReferenceAmount(): "   , food.getAdjustedReferenceAmount()   , "[00;00m");
+					logger.printf(ERROR, "%s%44s%s%s", "[01;03;33m", "food.getFopAdjustedReferenceAmount(): ", food.getFopAdjustedReferenceAmount(), "[00;00m");
 				}
 			}
 			logger.error("[01;03;31m" + "firing Drools" + "[00;00m");
