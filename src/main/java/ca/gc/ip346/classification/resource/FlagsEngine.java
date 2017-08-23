@@ -48,9 +48,9 @@ public class FlagsEngine {
 		// KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
 		String kSessionName = "ksession-process-" + ruleset + "-refamt";
-		logger.error("[01;03;35m" + "kSessionName: " + kSessionName + "[00;00m");
-		logger.error("[01;03;35m" + "ReleaseId: " + releaseId + "[00;00m");
-		logger.error("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt")) + "[00;00m");
+		logger.debug("[01;03;35m" + "kSessionName: " + kSessionName + "[00;00m");
+		logger.debug("[01;03;35m" + "ReleaseId: " + releaseId + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt")) + "[00;00m");
 		kieSessionPipeline.add(kContainer.newKieSession(kSessionName));
 
 
@@ -58,8 +58,8 @@ public class FlagsEngine {
 
 
 
-		logger.error("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt")) + "[00;00m");
-		logger.error("[01;03;31m" + "ksession-process-" + ruleset + "-refamt" + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt")) + "[00;00m");
+		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-refamt" + "[00;00m");
 
 		return this;
 	}
@@ -80,14 +80,14 @@ public class FlagsEngine {
 					kieSessionPipeline.get(i).fireAllRules();
 					/* only call this after adjustedRA is set */
 					calculatePerRA(food);
-					logger.printf(ERROR, "%s%44s%s%s", "[01;03;33m", "how many rulesets: "                   , kieSessionPipeline.size()           , "[00;00m");
-					logger.printf(ERROR, "%s%44s%s%s", "[01;03;33m", "food.getReferenceAmountG(): "          , food.getReferenceAmountG()          , "[00;00m");
-					logger.printf(ERROR, "%s%44s%s%s", "[01;03;33m", "food.getOverrideSmallRaAdjustment(): " , food.getOverrideSmallRaAdjustment() , "[00;00m");
-					logger.printf(ERROR, "%s%44s%s%s", "[01;03;33m", "food.getAdjustedReferenceAmount(): "   , food.getAdjustedReferenceAmount()   , "[00;00m");
-					logger.printf(ERROR, "%s%44s%s%s", "[01;03;33m", "food.getFopAdjustedReferenceAmount(): ", food.getFopAdjustedReferenceAmount(), "[00;00m");
+					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "how many rulesets: "                   , kieSessionPipeline.size()           , "[00;00m");
+					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getReferenceAmountG(): "          , food.getReferenceAmountG()          , "[00;00m");
+					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getOverrideSmallRaAdjustment(): " , food.getOverrideSmallRaAdjustment() , "[00;00m");
+					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getAdjustedReferenceAmount(): "   , food.getAdjustedReferenceAmount()   , "[00;00m");
+					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getFopAdjustedReferenceAmount(): ", food.getFopAdjustedReferenceAmount(), "[00;00m");
 				}
 			}
-			logger.error("[01;03;31m" + "firing Drools" + "[00;00m");
+			logger.debug("[01;03;31m" + "firing Drools" + "[00;00m");
 
 
 

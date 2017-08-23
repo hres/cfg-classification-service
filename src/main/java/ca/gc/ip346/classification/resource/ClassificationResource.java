@@ -13,7 +13,7 @@ import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.OPTIONS;
+// import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -65,7 +65,7 @@ public class ClassificationResource {
 	public ClassificationResource() {
 		mongoClient = MongoClientFactory.getMongoClient();
 		collection  = mongoClient.getDatabase(MongoClientFactory.getDatabase()).getCollection(MongoClientFactory.getCollection());
-		logger.error("[01;03;31m" + "mongo connectivity test: " + mongoClient.getDB(MongoClientFactory.getDatabase()).command("buildInfo").getString("version") + "[00;00m");
+		logger.debug("[01;03;31m" + "mongo connectivity test: " + mongoClient.getDB(MongoClientFactory.getDatabase()).command("buildInfo").getString("version") + "[00;00m");
 
 		rules                         = new ArrayList<String>();
 		KieServices ks                = KieServices.Factory.get();
@@ -90,19 +90,19 @@ public class ClassificationResource {
 		// ks.newKieBuilder(kfs).buildAll();
 		// this.releaseId = ks.getRepository().getDefaultReleaseId();
 
-		logger.error("[01;03;31m" + "\n" + (kieModuleModel.toXML()) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + (kieModuleModel.toXML()) + "[00;00m");
 
 		KieContainer kContainer = ks.getKieClasspathContainer();
 		// KieContainer kContainer = ks.newKieContainer(this.releaseId);
 		String pattern          = "ksession-process-(\\S+)-\\w+";
 
-		logger.error("[01;03;31m" + "list out the complete set of rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames()) + "[00;00m");
+		logger.debug("[01;03;31m" + "list out the complete set of rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames()) + "[00;00m");
 
 		/**
 		 * six rulesets get created - this is arbitrary
 		 */
 		for (String kieBaseName : kContainer.getKieBaseNames()) {
-			logger.error("[01;03;31m" + "session name:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName)) + "[00;00m");
+			logger.debug("[01;03;31m" + "session name:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName)) + "[00;00m");
 			for (String session : kContainer.getKieSessionNamesInKieBase(kieBaseName)) {
 				String rule = session.replaceAll(pattern, "$1");
 				rules.add(rule);
@@ -110,7 +110,7 @@ public class ClassificationResource {
 			// break;
 		}
 
-		logger.error("[01;03;31m" + "distinct rules:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
+		logger.debug("[01;03;31m" + "distinct rules:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
 
 		// Check to see if rulesets' identifiers exist in MongoDB and create them if they don't
 
@@ -123,7 +123,7 @@ public class ClassificationResource {
 				Boolean isNotValidRulesetId = true;
 
 				if (ObjectId.isValid(rule)) {
-					logger.error("[01;31m" + "Valid hexadecimal representation of RulesetId " + rule + "[00;00m");
+					logger.debug("[01;31m" + "Valid hexadecimal representation of RulesetId " + rule + "[00;00m");
 
 					cursorDocMap = collection.find(new Document("_id", new ObjectId(rule))).iterator();
 					if (!cursorDocMap.hasNext()) {
@@ -135,7 +135,7 @@ public class ClassificationResource {
 
 				if (isNotValidRulesetId) {
 					++ruleSetCounter;
-					logger.error("[01;03;31m" + ruleSetCounter + "[00;00m");
+					logger.debug("[01;03;31m" + ruleSetCounter + "[00;00m");
 					Document doc = new Document()
 						.append("name",     "Ruleset " + ruleSetCounter.toString() + "")
 						.append("isProd",   ruleSetCounter == 1 ? true : false)
@@ -159,11 +159,11 @@ public class ClassificationResource {
 				Document doc = cursorDocMap.next();
 				ObjectId id = (ObjectId)doc.get("_id");
 				ids.add(id.toString());
-				logger.error("[01;31m" + "Valid hexadecimal representation of RulesetId " + id + "[00;00m");
+				logger.debug("[01;31m" + "Valid hexadecimal representation of RulesetId " + id + "[00;00m");
 			}
 		}
 
-		logger.error("[01;03;31m" + "ruleset identifier(s):\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ids) + "[00;00m");
+		logger.debug("[01;03;31m" + "ruleset identifier(s):\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ids) + "[00;00m");
 
 		List<String> categories = new ArrayList<String>();
 		categories.add("refamt");
@@ -201,7 +201,7 @@ public class ClassificationResource {
 
 		for (int j = 0; j < categories.size(); ++j) {
 			for (int i = 0; i < ids.size(); ++i) {
-				logger.error("ksession-process-" + ids.get(i) + "-" + categories.get(j));
+				logger.debug("ksession-process-" + ids.get(i) + "-" + categories.get(j));
 				KieSessionModel kieSessionModel = bases.get(j).newKieSessionModel("ksession-process-" + ids.get(i) + "-" + categories.get(j));
 				if (i == 0) kieSessionModel.setDefault(true);
 			}
@@ -213,9 +213,9 @@ public class ClassificationResource {
 		// this.releaseId = ks.getRepository().getDefaultReleaseId();
 		this.releaseId = ks.newKieBuilder(kfs).buildAll().getKieModule().getReleaseId();
 
-		logger.error("[01;03;31m" + "\n" + (kieModuleModel.toXML()) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + (kieModuleModel.toXML()) + "[00;00m");
 
-		logger.error("[01;03;33m" + "release ID: " + this.releaseId + "[00;00m");
+		logger.debug("[01;03;33m" + "release ID: " + this.releaseId + "[00;00m");
 
 		this.rules = ids;
 	}
@@ -239,10 +239,10 @@ public class ClassificationResource {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 		String ruleset = dataset.getRuleset();
-		logger.printf(ERROR, "%s%22s%s%s", "[01;03;35m", "passed-in ruleset id: ", ruleset, "[00;00m");
+		logger.printf(DEBUG, "%s%22s%s%s", "[01;03;35m", "passed-in ruleset id: ", ruleset, "[00;00m");
 		if (dataset.getEnv().equals("prod") || ObjectId.isValid(dataset.getRuleset())) {
 			ruleset = this.rules.get(0);
-			logger.printf(ERROR, "%s%22s%s%s", "[01;03;35m", "default ruleset id: ", ruleset, "[00;00m");
+			logger.printf(DEBUG, "%s%22s%s%s", "[01;03;35m", "default ruleset id: ", ruleset, "[00;00m");
 		}
 
 		/**

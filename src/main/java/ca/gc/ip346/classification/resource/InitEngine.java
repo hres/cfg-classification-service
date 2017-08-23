@@ -50,11 +50,15 @@ public class InitEngine {
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-shortcut"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-thresholds"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-init"));
-		logger.error("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.fop"))        + "[00;00m");
-		logger.error("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.shortcut"))   + "[00;00m");
-		logger.error("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.thresholds")) + "[00;00m");
-		logger.error("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.init"))       + "[00;00m");
-		logger.error("[01;03;31m" + ruleset + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.fop"))        + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.shortcut"))   + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.thresholds")) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.init"))       + "[00;00m");
+
+		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-fop"        + "[00;00m");
+		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-shortcut"   + "[00;00m");
+		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-thresholds" + "[00;00m");
+		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-init"       + "[00;00m");
 
 		return this;
 	}
@@ -73,7 +77,7 @@ public class InitEngine {
 				if (!food.isDone()) {
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
-					logger.error("[01;03;31m" + kieSessionPipeline.size() + "[00;00m");
+					logger.debug("[01;03;31m" + kieSessionPipeline.size() + "[00;00m");
 
 
 
@@ -82,12 +86,12 @@ public class InitEngine {
 
 				}
 			}
-			logger.error("[01;03;31m" + "firing Drools" + "[00;00m");
+			logger.debug("[01;03;31m" + "firing Drools" + "[00;00m");
 
-			logger.error("[01;03;31m" + "CFG code: " + food.getCfgCode() + " tier: " + food.getTier() + "[00;00m");
+			logger.debug("[01;03;31m" + "CFG code: " + food.getCfgCode() + " tier: " + food.getTier() + "[00;00m");
 			String firstThreeDigits = food.getCfgCode() + "";
 			food.setInitialCfgCode(Integer.parseInt(firstThreeDigits.substring(0, 3) + food.getTier()));
-			logger.error("[01;03;31m" + "initial CFG code: " + food.getInitialCfgCode() + "[00;00m");
+			logger.debug("[01;03;31m" + "initial CFG code: " + food.getInitialCfgCode() + "[00;00m");
 
 			foodResults.add(food);
 		}
