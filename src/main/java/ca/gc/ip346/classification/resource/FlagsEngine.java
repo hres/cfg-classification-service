@@ -76,6 +76,7 @@ public class FlagsEngine {
 			// boolean setRA = false;
 			for (int i = 0; i < kieSessionPipeline.size(); i++) {
 				if (!food.isDone()) {
+logger.debug("[01;03;31m" + "HERE: \n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(food) + "[00;00m");
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
 					/* only call this after adjustedRA is set */
