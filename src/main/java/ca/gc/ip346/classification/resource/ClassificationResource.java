@@ -65,7 +65,7 @@ public class ClassificationResource {
 	public ClassificationResource() {
 		mongoClient = MongoClientFactory.getMongoClient();
 		collection  = mongoClient.getDatabase(MongoClientFactory.getDatabase()).getCollection(MongoClientFactory.getCollection());
-		logger.debug("[01;03;31m" + "mongo connectivity test: " + mongoClient.getDB(MongoClientFactory.getDatabase()).command("buildInfo").getString("version") + "[00;00m");
+		logger.debug("[01;03;31m" + "new mongo connectivity test: " + mongoClient.getDatabase(MongoClientFactory.getDatabase()).runCommand(new Document("buildInfo", 1)).getString("version") + "[00;00m");
 
 		rules                         = new ArrayList<String>();
 		KieServices ks                = KieServices.Factory.get();
