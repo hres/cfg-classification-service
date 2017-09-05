@@ -385,7 +385,10 @@ public class ClassificationResource {
 	//@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, String> test() {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("msg","Test suceeded" );
+		map.put("msg", "new mongo connectivity test: " + mongoClient.getDatabase(MongoClientFactory.getDatabase()).runCommand(new Document("buildInfo", 1)).getString("version"));
+		logger.debug("[01;03;31m" + "new mongo connectivity test: " + mongoClient.getAddress() + "[00;00m");
+		logger.debug("[01;03;31m" + "new mongo connectivity test: " + mongoClient.getConnectPoint() + "[00;00m");
+		logger.debug("[01;03;31m" + "new mongo connectivity test: " + mongoClient.getDatabase(MongoClientFactory.getDatabase()).runCommand(new Document("buildInfo", 1)).getString("version") + "[00;00m");
 		return map;
 	}
 
