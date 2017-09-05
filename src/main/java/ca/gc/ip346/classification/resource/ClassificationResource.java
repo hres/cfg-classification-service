@@ -123,7 +123,7 @@ public class ClassificationResource {
 				Boolean isNotValidRulesetId = true;
 
 				if (ObjectId.isValid(rule)) {
-					logger.debug("[01;31m" + "Valid hexadecimal representation of RulesetId " + rule + "[00;00m");
+					logger.debug("[01;31m" + "Valid hexadecimal representation of RulesetId (rule) " + rule + "[00;00m");
 
 					cursorDocMap = collection.find(new Document("_id", new ObjectId(rule))).iterator();
 					if (!cursorDocMap.hasNext()) {
@@ -159,7 +159,7 @@ public class ClassificationResource {
 				Document doc = cursorDocMap.next();
 				ObjectId id = (ObjectId)doc.get("_id");
 				ids.add(id.toString());
-				logger.debug("[01;31m" + "Valid hexadecimal representation of RulesetId " + id + "[00;00m");
+				logger.debug("[01;31m" + "Valid hexadecimal representation of RulesetId (id) " + id + "[00;00m");
 			}
 		}
 
