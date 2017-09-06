@@ -7,8 +7,10 @@ import static com.mongodb.client.model.Updates.set;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -110,6 +112,9 @@ public class ClassificationResource {
 			}
 			// break;
 		}
+
+		Set<String> distinctRules = new HashSet<String>(rules);
+		rules                     = new ArrayList<String>(distinctRules);
 
 		logger.debug("[01;03;31m" + "distinct rules:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
 
