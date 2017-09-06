@@ -118,23 +118,27 @@ public class ClassificationResource {
 		MongoCursor<Document> cursorDocMap = null;
 		List<String> ids = new ArrayList<String>();
 
+		/**
+		 * kmodule provides a list of valid ruleset id's
+		 * check to see if any of these ruleset id's exist in the local mongo
+		 */
 		if (collection.count() == 0) {
 			Integer ruleSetCounter = 0;
 			for (String rule : rules) {
-				Boolean isNotValidRulesetId = true;
+				Boolean rulesetIdDoesNotExist = true;
 
 				if (ObjectId.isValid(rule)) {
 					logger.debug("[01;31m" + "Valid hexadecimal representation of RulesetId (rule) " + rule + "[00;00m");
 
 					cursorDocMap = collection.find(new Document("_id", new ObjectId(rule))).iterator();
-					if (!cursorDocMap.hasNext()) {
+					if (cursorDocMap.hasNext()) {
 						// always the case - so create all arbitrary rulesets
 						// create new item and replace current rule value with new _id
-						isNotValidRulesetId = false;
+						rulesetIdDoesNotExist = false;
 					}
 				}
 
-				if (isNotValidRulesetId) {
+				if (rulesetIdDoesNotExist) {
 					++ruleSetCounter;
 					logger.debug("[01;03;31m" + ruleSetCounter + "[00;00m");
 					Document doc = new Document()
