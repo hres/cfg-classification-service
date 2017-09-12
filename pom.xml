@@ -124,6 +124,11 @@
 			<artifactId>jersey-media-sse</artifactId>
 			<version>${version.jersey}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${version.jersey}</version>
+		</dependency>
 
 		<!-- drools -->
 		<dependency>
