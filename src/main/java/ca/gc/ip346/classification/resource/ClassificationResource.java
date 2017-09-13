@@ -15,7 +15,6 @@ import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-// import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -229,16 +228,6 @@ public class ClassificationResource {
 
 		this.rules = ids;
 	}
-
-	// @OPTIONS
-	// @Path("/classify")
-	// @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	// @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	// public Map<String, String> classifyDatasetPreflight() {
-		// Map<String, String> msg = new HashMap<String, String>();
-		// msg.put("message", "options-catch-all");
-		// return msg;
-	// }
 
 	@POST
 	@Path("/classify")
