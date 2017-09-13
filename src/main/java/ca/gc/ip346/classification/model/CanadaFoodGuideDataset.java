@@ -769,17 +769,17 @@ public class CanadaFoodGuideDataset {
 	}
 
 	/**
-	 * @return the applySmallRaAdjustment
+	 * @return the overrideSmallRaAdjustment
 	 */
 	public Boolean getOverrideSmallRaAdjustment() {
 		return overrideSmallRaAdjustment;
 	}
 
 	/**
-	 * @param applySmallRaAdjustment the applySmallRaAdjustment to set
+	 * @param overrideSmallRaAdjustment the overrideSmallRaAdjustment to set
 	 */
-	public void setOverrideSmallRaAdjustment(Boolean applySmallRaAdjustment) {
-		this.overrideSmallRaAdjustment = applySmallRaAdjustment;
+	public void setOverrideSmallRaAdjustment(Boolean overrideSmallRaAdjustment) {
+		this.overrideSmallRaAdjustment = overrideSmallRaAdjustment;
 	}
 
 	/**
@@ -824,21 +824,42 @@ public class CanadaFoodGuideDataset {
 		this.comments = comments;
 	}
 
-	// Setters and getters for Classification
-	public Boolean isLowSugar() {
-		return lowSugar;
+	/**
+	 * @return the validated
+	 */
+	public Boolean getValidated() {
+		return validated;
 	}
 
-	public void setLowSugar(Boolean lowSugar) {
-		this.lowSugar = lowSugar;
+	/**
+	 * @param validated the validated to set
+	 */
+	public void setValidated(Boolean validated) {
+		this.validated = validated;
 	}
 
-	public Boolean isHighSugar() {
-		return highSugar;
+	public Double getSodiumDV() {
+		return sodiumDV;
 	}
 
-	public void setHighSugar(Boolean highSugar) {
-		this.highSugar = highSugar;
+	public void setSodiumDV(Double sodiumDV) {
+		this.sodiumDV = sodiumDV;
+	}
+
+	public Double getSugarDV() {
+		return sugarDV;
+	}
+
+	public void setSugarDV(Double sugarDV) {
+		this.sugarDV = sugarDV;
+	}
+
+	public Double getSatFatDV() {
+		return satFatDV;
+	}
+
+	public void setSatFatDV(Double satFatDV) {
+		this.satFatDV = satFatDV;
 	}
 
 	public Boolean isLowSodium() {
@@ -857,6 +878,22 @@ public class CanadaFoodGuideDataset {
 		this.highSodium = highSodium;
 	}
 
+	public Boolean isLowSugar() {
+		return lowSugar;
+	}
+
+	public void setLowSugar(Boolean lowSugar) {
+		this.lowSugar = lowSugar;
+	}
+
+	public Boolean isHighSugar() {
+		return highSugar;
+	}
+
+	public void setHighSugar(Boolean highSugar) {
+		this.highSugar = highSugar;
+	}
+
 	public Boolean isLowFat() {
 		return lowFat;
 	}
@@ -873,8 +910,26 @@ public class CanadaFoodGuideDataset {
 		this.highFat = highFat;
 	}
 
+	/**
+	 * @return the lowSatFat
+	 */
+	public Boolean isLowSatFat() {
+		return lowSatFat;
+	}
+
+	/**
+	 * @param lowSatFat the lowSatFat to set
+	 */
+	public void setLowSatFat(Boolean lowSatFat) {
+		this.lowSatFat = lowSatFat;
+	}
+
 	public Boolean isHighSatFat() {
 		return highSatFat;
+	}
+
+	public void setHighSatFat(Boolean highSatFat) {
+		this.highSatFat = highSatFat;
 	}
 
 	public Boolean isLowTransFat() {
@@ -893,30 +948,20 @@ public class CanadaFoodGuideDataset {
 		this.highTransFat = highTransFat;
 	}
 
-	/**
-	 * @return the lowSatFat
-	 */
-	public Boolean isLowSatFat() {
-		return lowSatFat;
-	}
-
-	/**
-	 * @param lowSatFat the lowSatFat to set
-	 */
-	public void setLowSatFat(Boolean lowSatFat) {
-		this.lowSatFat = lowSatFat;
-	}
-
-	public void setHighSatFat(Boolean highSatFat) {
-		this.highSatFat = highSatFat;
-	}
-
 	public Double getAdjustedReferenceAmount() {
 		return adjustedReferenceAmount;
 	}
 
 	public void setAdjustedReferenceAmount(Double adjustedReferenceAmount) {
 		this.adjustedReferenceAmount = adjustedReferenceAmount;
+	}
+
+	public Double getFopAdjustedReferenceAmount() {
+		return fopAdjustedReferenceAmount;
+	}
+
+	public void setFopAdjustedReferenceAmount(Double fopAdjustedReferenceAmount) {
+		this.fopAdjustedReferenceAmount = fopAdjustedReferenceAmount;
 	}
 
 	public Double getSodiumPerReferenceAmount() {
@@ -957,6 +1002,22 @@ public class CanadaFoodGuideDataset {
 
 	public void setTransFatPerReferenceAmount(Double transFatPerReferenceAmount) {
 		this.transFatPerReferenceAmount = transFatPerReferenceAmount;
+	}
+
+	public Double getFopSugarPerReferenceAmount() {
+		return fopSugarPerReferenceAmount;
+	}
+
+	public void setFopSugarPerReferenceAmount(Double fopSugarPerReferenceAmount) {
+		this.fopSugarPerReferenceAmount = fopSugarPerReferenceAmount;
+	}
+
+	public Double getFopSodiumPerReferenceAmount() {
+		return fopSodiumPerReferenceAmount;
+	}
+
+	public void setFopSodiumPerReferenceAmount(Double fopSodiumPerReferenceAmount) {
+		this.fopSodiumPerReferenceAmount = fopSodiumPerReferenceAmount;
 	}
 
 	public Boolean isDone() {
@@ -1026,30 +1087,6 @@ public class CanadaFoodGuideDataset {
 		this.sodiumFopWarning = sodiumFopWarning;
 	}
 
-	public Double getFopSugarPerReferenceAmount() {
-		return fopSugarPerReferenceAmount;
-	}
-
-	public void setFopSugarPerReferenceAmount(Double fopSugarPerReferenceAmount) {
-		this.fopSugarPerReferenceAmount = fopSugarPerReferenceAmount;
-	}
-
-	public Double getFopSodiumPerReferenceAmount() {
-		return fopSodiumPerReferenceAmount;
-	}
-
-	public void setFopSodiumPerReferenceAmount(Double fopSodiumPerReferenceAmount) {
-		this.fopSodiumPerReferenceAmount = fopSodiumPerReferenceAmount;
-	}
-
-	public Double getFopAdjustedReferenceAmount() {
-		return fopAdjustedReferenceAmount;
-	}
-
-	public void setFopAdjustedReferenceAmount(Double fopAdjustedReferenceAmount) {
-		this.fopAdjustedReferenceAmount = fopAdjustedReferenceAmount;
-	}
-
 	public Boolean getMarketedToKids() {
 		return marketedToKids;
 	}
@@ -1070,43 +1107,5 @@ public class CanadaFoodGuideDataset {
 	 */
 	public void setInitialCfgCode(Integer initialCfgCode) {
 		this.initialCfgCode = initialCfgCode;
-	}
-
-	/**
-	 * @return the validated
-	 */
-	public Boolean getValidated() {
-		return validated;
-	}
-
-	/**
-	 * @param validated the validated to set
-	 */
-	public void setValidated(Boolean validated) {
-		this.validated = validated;
-	}
-
-	public Double getSodiumDV() {
-		return sodiumDV;
-	}
-
-	public void setSodiumDV(Double sodiumDV) {
-		this.sodiumDV = sodiumDV;
-	}
-
-	public Double getSatFatDV() {
-		return satFatDV;
-	}
-
-	public void setSatFatDV(Double satFatDV) {
-		this.satFatDV = satFatDV;
-	}
-
-	public Double getSugarDV() {
-		return sugarDV;
-	}
-
-	public void setSugarDV(Double sugarDV) {
-		this.sugarDV = sugarDV;
 	}
 }
