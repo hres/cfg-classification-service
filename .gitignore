@@ -1,10 +1,10 @@
-.metadata/
-bin
-out
-build
+/build
+/target
+/.classpath
+/.project
+/.settings
 classes
-.gradle
 tags
-/target/
 *.sw[a-z]
+.exrc
 mongodb.properties
