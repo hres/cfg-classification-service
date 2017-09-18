@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ca.gc.hc-sc.ip346</groupId>
-	<artifactId>cfg-classification-service</artifactId>
+	<artifactId>cfg-classification-service-qa</artifactId>
 	<version>1</version>
-	<name>cfg-classification-service</name>
+	<name>cfg-classification-service-qa</name>
 	<packaging>war</packaging>
 
 	<properties>
@@ -53,7 +53,7 @@
 	</repositories>
 
 	<build>
-		<finalName>cfg-classification-service</finalName>
+		<finalName>cfg-classification-service-qa</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
