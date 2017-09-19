@@ -15,7 +15,7 @@ public class ApplicationConfig extends Application {
 
 		Set<Class<?>> resources = new java.util.HashSet<>();
 
-		System.out.println("[01;35m" + "REST configuration starting: getClasses()" + "[00;00m");
+		System.out.println("[01;35m" + "Food Classification REST configuration starting: getClasses()" + "[00;00m");
 
 		//features
 		//this will register Jackson JSON providers
