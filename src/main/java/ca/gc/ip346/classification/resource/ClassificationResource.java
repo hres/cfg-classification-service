@@ -269,19 +269,19 @@ public class ClassificationResource {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Object> getRulesets() {
-		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> result         = new HashMap<String, Object>();
 		List<Map<String, Object>> rulesets = new ArrayList<Map<String, Object>>();
 		MongoCursor<Document> cursorDocMap = null;
 		for (String rule : rules) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			cursorDocMap = collection.find(new Document("_id", new ObjectId(rule))).iterator();
+			cursorDocMap            = collection.find(new Document("_id", new ObjectId(rule))).iterator();
 			while (cursorDocMap.hasNext()) {
-				Document doc = cursorDocMap.next();
-				ObjectId id = (ObjectId)doc.get("_id");
-				map.put("id", id.toString());
-				String name = (String)doc.get("name");
-				map.put("name", name);
+				Document doc   = cursorDocMap.next();
+				ObjectId id    = (ObjectId)doc.get("_id");
+				String name    = (String)doc.get("name");
 				Boolean isProd = (Boolean)doc.get("isProd");
+				map.put("id", id.toString());
+				map.put("name", name);
 				map.put("isProd", isProd);
 				rulesets.add(map);
 			}
@@ -294,16 +294,16 @@ public class ClassificationResource {
 	@Path("/rulesets/{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public Map<String, Object> getRulesets(@PathParam("id") String id) {
+	public Map<String, Object> getRuleset(@PathParam("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MongoCursor<Document> cursorDocMap = collection.find(new Document("_id", new ObjectId(id))).iterator();
 		while (cursorDocMap.hasNext()) {
-			Document doc = cursorDocMap.next();
+			Document doc      = cursorDocMap.next();
 			ObjectId identity = (ObjectId)doc.get("_id");
+			String name       = (String)doc.get("name");
+			Boolean isProd    = (Boolean)doc.get("isProd");
 			map.put("id", identity.toString());
-			String name = (String)doc.get("name");
 			map.put("name", name);
-			Boolean isProd = (Boolean)doc.get("isProd");
 			map.put("isProd", isProd);
 		}
 		return map;
