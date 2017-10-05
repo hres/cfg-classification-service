@@ -59,8 +59,9 @@ public class ClassificationResource {
 
 	/**
 	 *
-	 * Obtain the complete set of rulesets from kmodule.xml - a list of identifiers
+	 * Obtain the complete set of rulesets from kmodule.xml - a list of identifiers: one per ruleset
 	 * Check to see if rulesets' identifiers exist in MongoDB and overwrite them if they don't
+	 * TODO: implement GridFS when connecting to MongoDB
 	 *
 	 */
 	public ClassificationResource() {
@@ -92,19 +93,22 @@ public class ClassificationResource {
 		// ks.newKieBuilder(kfs).buildAll();
 		// this.releaseId = ks.getRepository().getDefaultReleaseId();
 
-		logger.debug("[01;03;31m" + "\n" + (kieModuleModel.toXML()) + "[00;00m");
+		logger.debug("[01;03;31m" + "dynamically built kmodule:\n" + (kieModuleModel.toXML()) + "[00;00m");
 
-		KieContainer kContainer = ks.getKieClasspathContainer();
+		KieContainer kContainer = ks.getKieClasspathContainer(); // returns KieContainer for the classpath, this a global singleton
 		// KieContainer kContainer = ks.newKieContainer(this.releaseId);
 		String pattern          = "ksession-process-(\\S+)-\\w+";
 
-		logger.debug("[01;03;31m" + "list out the complete set of rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames()) + "[00;00m");
+		logger.debug("[01;03;31m" + "complete set of dynamically built rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames()) + "[00;00m");
+		// creates a new KieContainer for the classpath, regardless if there's already an existing one: ks.newKieClasspathContainer()
+		logger.debug("[01;03;31m" + "complete set of dynamically built rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ks.newKieClasspathContainer().getKieBaseNames()) + "[00;00m");
 
 		/**
-		 * six rulesets get created - this is arbitrary
+		 * six rulesets get created - this is arbitrary - six if using dynamically created KieModuleModel, not the classpath
 		 */
 		for (String kieBaseName : kContainer.getKieBaseNames()) {
-			logger.debug("[01;03;31m" + "session name:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName)) + "[00;00m");
+			logger.debug("[01;03;33m" + "session count: " + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName).size()) + "[00;00m");
+			logger.debug("[01;03;31m" + "session names:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName)) + "[00;00m");
 			for (String session : kContainer.getKieSessionNamesInKieBase(kieBaseName)) {
 				String rule = session.replaceAll(pattern, "$1");
 				rules.add(rule);
@@ -115,6 +119,7 @@ public class ClassificationResource {
 		Set<String> distinctRules = new HashSet<String>(rules);
 		rules                     = new ArrayList<String>(distinctRules);
 
+		logger.debug("[01;03;33m" + "distinct count: " + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules.size()) + "[00;00m");
 		logger.debug("[01;03;31m" + "distinct rules:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
 
 		// Check to see if rulesets' identifiers exist in MongoDB and create them if they don't
@@ -172,7 +177,7 @@ public class ClassificationResource {
 			}
 		}
 
-		logger.debug("[01;03;31m" + "ruleset identifier(s):\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ids) + "[00;00m");
+		logger.debug("[01;03;33m" + "ruleset identifier(s) from mongodb:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ids) + "[00;00m");
 
 		List<String> categories = new ArrayList<String>();
 		categories.add("refamt");
@@ -182,15 +187,15 @@ public class ClassificationResource {
 		categories.add("init");
 		categories.add("tier");
 
-		kieBaseModel1.removeKieSessionModel("ksession-process-refamt");
-		kieBaseModel2.removeKieSessionModel("ksession-process-fop");
-		kieBaseModel3.removeKieSessionModel("ksession-process-shortcut");
-		kieBaseModel4.removeKieSessionModel("ksession-process-thresholds");
-		kieBaseModel5.removeKieSessionModel("ksession-process-init");
-		kieBaseModel6.removeKieSessionModel("ksession-process-tier");
+		// kieBaseModel1.removeKieSessionModel("ksession-process-refamt");     // not necessary since kieModuleModel is overwritten
+		// kieBaseModel2.removeKieSessionModel("ksession-process-fop");        // not necessary since kieModuleModel is overwritten
+		// kieBaseModel3.removeKieSessionModel("ksession-process-shortcut");   // not necessary since kieModuleModel is overwritten
+		// kieBaseModel4.removeKieSessionModel("ksession-process-thresholds"); // not necessary since kieModuleModel is overwritten
+		// kieBaseModel5.removeKieSessionModel("ksession-process-init");       // not necessary since kieModuleModel is overwritten
+		// kieBaseModel6.removeKieSessionModel("ksession-process-tier");       // not necessary since kieModuleModel is overwritten
 
 		ks             = KieServices.Factory.get();
-		kieModuleModel = ks.newKieModuleModel();
+		kieModuleModel = ks.newKieModuleModel(); // overwrites previous kieModuleModel
 
 		kieBaseModel1 = kieModuleModel.newKieBaseModel("dtables.refamt")     .addPackage("dtables.refamt")     .setDeclarativeAgenda(ENABLED) .setDefault(true);
 		kieBaseModel2 = kieModuleModel.newKieBaseModel("dtables.fop")        .addPackage("dtables.fop")        .setDeclarativeAgenda(ENABLED) .setDefault(true);
@@ -201,12 +206,12 @@ public class ClassificationResource {
 
 		List<KieBaseModel> bases = new ArrayList<KieBaseModel>();
 
-		bases.add(kieBaseModel1); // refamt
-		bases.add(kieBaseModel2); // fop
-		bases.add(kieBaseModel3); // shortcut
-		bases.add(kieBaseModel4); // thresholds
-		bases.add(kieBaseModel5); // init
-		bases.add(kieBaseModel6); // tier
+		bases.add(kieBaseModel1); // dtables.refamt
+		bases.add(kieBaseModel2); // dtables.fop
+		bases.add(kieBaseModel3); // dtables.shortcut
+		bases.add(kieBaseModel4); // dtables.thresholds
+		bases.add(kieBaseModel5); // dtables.init
+		bases.add(kieBaseModel6); // dtables.tier
 
 		for (int j = 0; j < categories.size(); ++j) {
 			for (int i = 0; i < ids.size(); ++i) {
