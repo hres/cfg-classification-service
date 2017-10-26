@@ -1,11 +1,14 @@
 package ca.gc.ip346.classification.resource;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.currentDate;
 import static com.mongodb.client.model.Updates.set;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +19,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -26,6 +30,7 @@ import static org.apache.logging.log4j.Level.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -45,7 +50,9 @@ import com.mongodb.client.MongoCursor;
 
 import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
 import ca.gc.ip346.classification.model.Dataset;
+import ca.gc.ip346.classification.model.Ruleset;
 import ca.gc.ip346.util.MongoClientFactory;
+import ca.gc.ip346.util.RuleSets;
 
 @Path("/")
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -53,8 +60,10 @@ import ca.gc.ip346.util.MongoClientFactory;
 public class ClassificationResource {
 	private static final Logger logger           = LogManager.getLogger(ClassificationResource.class);
 	private List<String> rules                   = null;
+	private List<String> sessions                = null;
 	private MongoClient mongoClient              = null;
 	private MongoCollection<Document> collection = null;
+	private MongoCollection<Document> slots      = null;
 	private ReleaseId releaseId                  = null;
 
 	/**
@@ -67,10 +76,12 @@ public class ClassificationResource {
 	public ClassificationResource() {
 		mongoClient = MongoClientFactory.getMongoClient();
 		collection  = mongoClient.getDatabase(MongoClientFactory.getDatabase()).getCollection(MongoClientFactory.getCollection());
+		slots       = mongoClient.getDatabase(MongoClientFactory.getDatabase()).getCollection(MongoClientFactory.getAnotherCollection());
 		logger.debug("[01;03;31m" + "collection: " + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(collection.count()) + "[00;00m");
 		logger.debug("[01;03;31m" + "new mongo connectivity test: " + mongoClient.getDatabase(MongoClientFactory.getDatabase()).runCommand(new Document("buildInfo", 1)).getString("version") + "[00;00m");
 
 		rules                         = new ArrayList<String>();
+		sessions                      = new ArrayList<String>();
 		KieServices ks                = KieServices.Factory.get();
 		KieModuleModel kieModuleModel = ks.newKieModuleModel();
 
@@ -99,28 +110,50 @@ public class ClassificationResource {
 		// KieContainer kContainer = ks.newKieContainer(this.releaseId);
 		String pattern          = "ksession-process-(\\S+)-\\w+";
 
-		logger.debug("[01;03;31m" + "complete set of dynamically built rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames()) + "[00;00m");
-		// creates a new KieContainer for the classpath, regardless if there's already an existing one: ks.newKieClasspathContainer()
+		logger.debug("[01;03;31m" + "complete set of dynamically built rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames())                    + "[00;00m");
+		// creates a new KieContainer for the classpath, regardless if there's already an existing one: ks.newKieClasspathContainer() versus ks.getKieClasspathContainer()
 		logger.debug("[01;03;31m" + "complete set of dynamically built rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ks.newKieClasspathContainer().getKieBaseNames()) + "[00;00m");
 
 		/**
 		 * six rulesets get created - this is arbitrary - six if using dynamically created KieModuleModel, not the classpath
+		 * sixteen rulesets get created - this is arbitrary - sixteen if using the classpath
 		 */
 		for (String kieBaseName : kContainer.getKieBaseNames()) {
-			logger.debug("[01;03;33m" + "session count: " + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName).size()) + "[00;00m");
-			logger.debug("[01;03;31m" + "session names:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName)) + "[00;00m");
+			logger.debug("[01;03;33m" + "session count:  " + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName).size()) + "[00;00m");
+			logger.debug("[01;03;31m" + "session names:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName))        + "[00;00m");
 			for (String session : kContainer.getKieSessionNamesInKieBase(kieBaseName)) {
+				sessions.add(session);
 				String rule = session.replaceAll(pattern, "$1");
 				rules.add(rule);
 			}
 			// break;
 		}
 
+		Comparator<String> cmp = new Comparator<String>() {
+			public int compare(String o1, String o2) {
+				return Integer.valueOf(o1).compareTo(Integer.valueOf(o2));
+			}
+		};
+
+		Collections.sort(rules, cmp);
+		logger.debug("[01;03;31m" + "multiple rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules)           + "[00;00m");
+
 		Set<String> distinctRules = new HashSet<String>(rules);
 		rules                     = new ArrayList<String>(distinctRules);
+		Collections.sort(rules, cmp);
 
-		logger.debug("[01;03;33m" + "distinct count: " + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules.size()) + "[00;00m");
-		logger.debug("[01;03;31m" + "distinct rules:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
+		cmp = new Comparator<String>() {
+			public int compare(String o1, String o2) {
+				return Integer.valueOf(o1.replaceAll("ksession-process-", "").replaceAll("-\\w+", "")).compareTo(Integer.valueOf(o2.replaceAll("ksession-process-", "").replaceAll("-\\w+", "")));
+			}
+		};
+
+		Collections.sort(sessions, cmp);
+
+		logger.debug("[01;03;33m" + "ruleset count: "      + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules.size())    + "[00;00m");
+		logger.debug("[01;03;31m" + "distinct rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules)           + "[00;00m");
+		logger.debug("[01;03;31m" + "session count: "      + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(sessions.size()) + "[00;00m");
+		logger.debug("[01;03;31m" + "distinct sessions:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(sessions)        + "[00;00m");
 
 		// Check to see if rulesets' identifiers exist in MongoDB and create them if they don't
 
@@ -177,6 +210,28 @@ public class ClassificationResource {
 			}
 		}
 
+		if (slots.count() == 0) {
+			logger.printf(DEBUG, "%s%s%s", "[01;03;35m", "CREATE ALL 16 SLOTS HERE!", "[00;00m");
+			for (String rule : rules) {
+				Document doc = new Document()
+					.append("name", "Ruleset " + rule)
+					.append("rulesetId", Integer.valueOf(rule))
+					.append("isProd", rule.equals("1") ? true : false)
+					.append("active", rule.equals("1") ? true : false);
+				ObjectId id = (ObjectId)doc.get("_id");
+				collection.updateOne(
+						eq("_id", id),
+						combine(
+							set("isProd", rule.equals("1") ? true : false),
+							set("active", rule.equals("1") ? true : false),
+							currentDate("modifiedDate"))
+						);
+				slots.insertOne(doc);
+			}
+		} else {
+			cursorDocMap = slots.find().iterator();
+		}
+
 		logger.debug("[01;03;33m" + "ruleset identifier(s) from mongodb:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ids) + "[00;00m");
 
 		List<String> categories = new ArrayList<String>();
@@ -231,30 +286,26 @@ public class ClassificationResource {
 
 		logger.debug("[01;03;33m" + "release ID: " + this.releaseId + "[00;00m");
 
-		this.rules = ids;
+		// this.rules = ids;
 	}
 
 	@POST
-	@Path("/classify")
+	@Path("/classify/{rulesetId}")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public Map<String, Object> classifyDataset(Dataset dataset) {
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public Map<String, Object> classifyDataset(@PathParam("rulesetId") Integer rulesetId, Dataset dataset) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
-		String ruleset = dataset.getRuleset();
-		logger.printf(DEBUG, "%s%22s%s%s", "[01;03;35m", "passed-in ruleset id: ", ruleset, "[00;00m");
-		if (dataset.getEnv().equals("prod") || ObjectId.isValid(dataset.getRuleset())) {
-			ruleset = this.rules.get(0);
-			logger.printf(DEBUG, "%s%22s%s%s", "[01;03;35m", "default ruleset id: ", ruleset, "[00;00m");
+		logger.printf(DEBUG, "%s%22s%d%s", "[01;03;35m", "passed-in ruleset id: ", rulesetId, "[00;00m");
+
+		if (rulesetId == 0) {
+			rulesetId = getProductionRulesetId();
 		}
 
-		/**
-		 * TODO: make the ruleset ID part of the Dataset and pass in the ruleset ID
-		 */
-		foods = FlagsEngine      .flagsEngine      .setReleaseIdAndRuleset(this.releaseId, ruleset) .setFlags (foods); // Step 1: RA Adjustment
-		foods = InitEngine       .initEngine       .setReleaseIdAndRuleset(this.releaseId, ruleset) .setInit  (foods); // Step 2: Threshold Rule
-		foods = AdjustmentEngine .adjustmentEngine .setReleaseIdAndRuleset(this.releaseId, ruleset) .adjust   (foods); // Step 3: Adjustments
+		foods = FlagsEngine      .flagsEngine      .setReleaseIdAndRuleset(this.releaseId, rulesetId.toString()) .setFlags (foods); // Step 1: RA Adjustment
+		foods = InitEngine       .initEngine       .setReleaseIdAndRuleset(this.releaseId, rulesetId.toString()) .setInit  (foods); // Step 2: Threshold Rule
+		foods = AdjustmentEngine .adjustmentEngine .setReleaseIdAndRuleset(this.releaseId, rulesetId.toString()) .adjust   (foods); // Step 3: Adjustments
 		foods = prepareCfgCode(foods);
 
 		List<CanadaFoodGuideDataset> foodResults = foods;
@@ -265,7 +316,6 @@ public class ClassificationResource {
 		map.put("env",      dataset.getEnv());
 		map.put("owner",    dataset.getOwner());
 		map.put("comments", dataset.getComments());
-		map.put("ruleset",  dataset.getRuleset());
 		return map;
 	}
 
@@ -279,19 +329,26 @@ public class ClassificationResource {
 		MongoCursor<Document> cursorDocMap = null;
 		for (String rule : rules) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			cursorDocMap            = collection.find(new Document("_id", new ObjectId(rule))).iterator();
+			cursorDocMap            = slots.find(new Document("rulesetId", Integer.valueOf(rule)).append("active", true)).iterator();
 			while (cursorDocMap.hasNext()) {
-				Document doc   = cursorDocMap.next();
-				ObjectId id    = (ObjectId)doc.get("_id");
-				String name    = (String)doc.get("name");
-				Boolean isProd = (Boolean)doc.get("isProd");
+				Document doc      = cursorDocMap.next();
+				ObjectId id       = (ObjectId)doc.get("_id");
+				String name       = (String)doc.get("name");
+				Integer rulesetId = (Integer)doc.get("rulesetId");
+				Boolean isProd    = (Boolean)doc.get("isProd");
+				Boolean active    = (Boolean)doc.get("active");
 				map.put("id", id.toString());
 				map.put("name", name);
+				map.put("rulesetId", rulesetId);
 				map.put("isProd", isProd);
+				map.put("active", active);
 				rulesets.add(map);
 			}
 		}
 		result.put("rulesets", rulesets);
+
+		mongoClient.close();
+
 		return result;
 	}
 
@@ -301,31 +358,101 @@ public class ClassificationResource {
 	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Object> getRuleset(@PathParam("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		MongoCursor<Document> cursorDocMap = collection.find(new Document("_id", new ObjectId(id))).iterator();
+		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id))).iterator();
 		while (cursorDocMap.hasNext()) {
 			Document doc      = cursorDocMap.next();
 			ObjectId identity = (ObjectId)doc.get("_id");
 			String name       = (String)doc.get("name");
+			Integer rulesetId = (Integer)doc.get("rulesetId");
 			Boolean isProd    = (Boolean)doc.get("isProd");
+			Boolean active    = (Boolean)doc.get("active");
+
 			map.put("id", identity.toString());
 			map.put("name", name);
+			map.put("rulesetId", rulesetId);
 			map.put("isProd", isProd);
+			map.put("active", active);
 		}
+
+		mongoClient.close();
+
 		return map;
+	}
+
+	@POST
+	@Path("/rulesets")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public Map<String, Object> createRuleset(Ruleset ruleset) {
+		Map<String, Object> msg = new HashMap<String, Object>();
+		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", ruleset.getRulesetId()).append("active", false).append("isProd", false)).iterator();
+		List<Bson> firstLevelSets = new ArrayList<Bson>();
+		if (!cursorDocMap.hasNext()) {
+			msg.put("message", "Failed to create ruleset!");
+		} else {
+			firstLevelSets.add(set("name", ruleset.getName()));
+			firstLevelSets.add(set("active", ruleset.isActive()));
+			firstLevelSets.add(set("isProd", ruleset.getIsProd()));
+			slots.updateOne(eq("rulesetId", ruleset.getRulesetId()), combine(firstLevelSets));
+			msg.put("message", "Successfully created ruleset with ID: " + ruleset.getRulesetId().toString());
+		}
+		return msg;
+	}
+
+	@PUT
+	@Path("/rulesets/{id}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public Map<String, Object> updateRuleset(@PathParam("id") String id, Ruleset ruleset) {
+		Map<String, Object> msg = new HashMap<String, Object>();
+		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id)).append("active", true)).iterator();
+		List<Bson> firstLevelSets = new ArrayList<Bson>();
+		int changes = 0;
+
+		if (!cursorDocMap.hasNext()) {
+			msg.put("message", "Failed to update ruleset with id: " + id);
+		} else {
+			Document doc = cursorDocMap.next();
+			if (ruleset.getName() != null && !ruleset.getName().equals(doc.get("name"))) {
+				firstLevelSets.add(set("name", ruleset.getName()));
+				++changes;
+			}
+			if (ruleset.getIsProd() != null && !ruleset.getIsProd().equals(doc.get("isProd"))) {
+				firstLevelSets.add(set("isProd", ruleset.getIsProd()));
+				slots.updateOne(and(eq("active", true), eq("isProd", true)), set("isProd", false)); // reset existing default ruleset
+				++changes;
+			}
+
+			if (changes != 0) {
+				// TODO: firstLevelSets.add(currentDate("modifiedDate"));
+				slots.updateOne(eq("rulesetId", Integer.valueOf(id)), combine(firstLevelSets));
+			}
+			msg.put("message", "Successfully updated ruleset with id: " + id);
+		}
+
+		return msg;
 	}
 
 	@DELETE
 	@Path("/rulesets/{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public /* Response */ Map<String, Object> deleteRulesets(@PathParam("id") String id) {
+	public /* Response */ Map<String, Object> deleteRuleset(@PathParam("id") String id) {
 		Map<String, Object> msg = new HashMap<String, Object>();
-		MongoCursor<Document> cursorDocMap = collection.find(new Document("_id", new ObjectId(id))).iterator();
-		while (cursorDocMap.hasNext()) {
+		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id)).append("isProd", false).append("active", true)).iterator();
+
+		if (!cursorDocMap.hasNext()) {
+			msg.put("message", "Failed to delete ruleset with id: " + id);
+		} else {
 			Document doc = cursorDocMap.next();
-			collection.deleteOne(doc);
+			slots.deleteOne(doc);
+			msg.put("message", "Successfully deleted ruleset with id: " + id);
 		}
-		msg.put("message", "Successfully deleted ruleset with id: " + id);
+
+		mongoClient.close();
+
 		return msg;
 	}
 
@@ -334,7 +461,7 @@ public class ClassificationResource {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public /* Response */ Map<String, String> deleteAllRulesets() {
-		collection.deleteMany(new Document());
+		slots.deleteMany(new Document());
 
 		mongoClient.close();
 
@@ -342,6 +469,42 @@ public class ClassificationResource {
 		msg.put("message", "Successfully deleted all datasets");
 
 		return msg;
+	}
+
+	@GET
+	@Path("/rulesetshome")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public Map<String, String> getRulesetsHome() {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("rulesetshome", RuleSets.getHome());
+		return map;
+	}
+
+	@GET
+	@Path("/slot")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public Map<String, Integer> getAvailableSlot() {
+		Integer slot                       = null;
+		Map<String, Integer> map           = new HashMap<String, Integer>();
+		MongoCursor<Document> cursorDocMap = null;
+		for (String rule : rules) {
+			cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(rule)).append("active", false)).iterator();
+			while (cursorDocMap.hasNext()) {
+				Document doc = cursorDocMap.next();
+				slot         = (Integer)doc.get("rulesetId");
+				break;
+			}
+			if (slot != null) {
+				break;
+			}
+		}
+		map.put("slot", slot);
+
+		mongoClient.close();
+
+		return map;
 	}
 
 	@POST
@@ -403,5 +566,14 @@ public class ClassificationResource {
 			food.setClassifiedCfgCode(temp);
 		}
 		return foods;
+	}
+
+	private Integer getProductionRulesetId() {
+		MongoCursor<Document> cursorDocMap = slots.find(new Document("isProd", true)).iterator();
+		while (cursorDocMap.hasNext()) {
+			Document doc = cursorDocMap.next();
+			return doc.getInteger("rulesetId");
+		}
+		return null;
 	}
 }

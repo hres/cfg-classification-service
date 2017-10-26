@@ -46,4 +46,14 @@ public class MongoClientFactory {
 		}
 		return collection;
 	}
+
+	public static String getAnotherCollection() {
+		String another = null;
+		try {
+			another = getProps().getProperty("another");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return another;
+	}
 }

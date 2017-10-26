@@ -3,3 +3,4 @@ host=localhost
 port=27017
 database=rulesets
 collection=master
+another=slots
