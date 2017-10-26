@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
-  <session-config>
-    <session-timeout>30</session-timeout>
-    <cookie-config>
-      <name>SESSIONID</name>
-    </cookie-config>
-  </session-config>
+	<session-config>
+		<session-timeout>30</session-timeout>
+		<cookie-config>
+			<name>SESSIONID</name>
+		</cookie-config>
+	</session-config>
+	<listener>
+		<listener-class>ca.gc.ip346.util.RuleSets</listener-class>
+	</listener>
+	<context-param>
+		<param-name>RULESETS_HOME</param-name>
+		<param-value>${RULESETS_HOME}</param-value>
+	</context-param>
 </web-app>

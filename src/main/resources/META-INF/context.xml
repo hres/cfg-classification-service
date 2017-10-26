@@ -1,0 +1,24 @@
+<Context reloadable="true">
+	<Resources className="org.apache.catalina.webresources.StandardRoot">
+		<PreResources
+				className   = "org.apache.catalina.webresources.DirResourceSet"
+				base        = "${RULESETS_HOME}/dtables"
+				webAppMount = "/WEB-INF/classes/dtables"></PreResources>
+		<PostResources
+				className   = "org.apache.catalina.webresources.DirResourceSet"
+				base        = "${RULESETS_HOME}/dtables"
+				webAppMount = "/WEB-INF/classes/dtables"></PostResources>
+		<MainResources
+				className   = "org.apache.catalina.webresources.JarResourceSet"
+				base        = "${RULESETS_HOME}/dtables"
+				webAppMount = "/WEB-INF/classes/dtables"></MainResources>
+		<ClassResources
+				className   = "org.apache.catalina.webresources.JarResourceSet"
+				base        = "${RULESETS_HOME}/dtables"
+				webAppMount = "/WEB-INF/classes/dtables"></ClassResources>
+		<JarResources
+				className   = "org.apache.catalina.webresources.JarResourceSet"
+				base        = "${RULESETS_HOME}/dtables"
+				webAppMount = "/WEB-INF/classes/dtables"></JarResources>
+	</Resources>
+</Context>

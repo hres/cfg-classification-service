@@ -5,10 +5,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
+import javax.ws.rs.core.Context;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 @ApplicationPath("/")
 public class ApplicationConfig extends Application {
+	// import static org.apache.logging.log4j.Level.*;
+	private static final Logger logger = LogManager.getLogger(ApplicationConfig.class);
+
+
+	@Context
+	private ServletContext sc;
 
 	@Override
 	public Set<Class<?>> getClasses() {
@@ -16,6 +28,10 @@ public class ApplicationConfig extends Application {
 		Set<Class<?>> resources = new java.util.HashSet<>();
 
 		System.out.println("[01;35m" + "Food Classification REST services (cfg-classification-service) configuration starting: getClasses()" + "[00;00m");
+
+		logger.debug("[01;03;36m" + "hello: " + sc.getInitParameter("RULESETS_HOME") + "[00;00m");
+		logger.debug("[01;03;36m" + "cntxt: " + sc.getContextPath() + "[00;00m");
+		logger.debug("[01;03;36m" + "paths: " + sc.getResourcePaths("/") + "[00;00m");
 
 		//features
 		//this will register Jackson JSON providers
