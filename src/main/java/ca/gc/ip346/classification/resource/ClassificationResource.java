@@ -404,7 +404,7 @@ public class ClassificationResource {
 	@Path("/rulesets/{id}")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Object> updateRuleset(@PathParam("id") String id, Ruleset ruleset) {
 		Map<String, Object> msg = new HashMap<String, Object>();
 		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id)).append("active", true)).iterator();
@@ -419,8 +419,8 @@ public class ClassificationResource {
 				firstLevelSets.add(set("name", ruleset.getName()));
 				++changes;
 			}
-			if (ruleset.getIsProd() != null && !ruleset.getIsProd().equals(doc.get("isProd"))) {
-				firstLevelSets.add(set("isProd", ruleset.getIsProd()));
+			if (ruleset.getIsProd() != null) {
+				firstLevelSets.add(set("isProd", true));
 				slots.updateOne(and(eq("active", true), eq("isProd", true)), set("isProd", false)); // reset existing default ruleset
 				++changes;
 			}
