@@ -41,8 +41,8 @@ import org.kie.api.builder.model.KieSessionModel;
 import static org.kie.api.conf.DeclarativeAgendaOption.*;
 import org.kie.api.runtime.KieContainer;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
+// import com.fasterxml.jackson.databind.SerializationFeature;
+// import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
 import com.google.gson.GsonBuilder;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -293,7 +293,7 @@ public class ClassificationResource {
 	@Path("/classify/{rulesetId}")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Object> classifyDataset(@PathParam("rulesetId") Integer rulesetId, Dataset dataset) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
@@ -322,7 +322,7 @@ public class ClassificationResource {
 	@GET
 	@Path("/rulesets")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Object> getRulesets() {
 		Map<String, Object> result         = new HashMap<String, Object>();
 		List<Map<String, Object>> rulesets = new ArrayList<Map<String, Object>>();
@@ -355,7 +355,7 @@ public class ClassificationResource {
 	@GET
 	@Path("/rulesets/{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Object> getRuleset(@PathParam("id") String id) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id))).iterator();
@@ -383,7 +383,7 @@ public class ClassificationResource {
 	@Path("/rulesets")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Object> createRuleset(Ruleset ruleset) {
 		Map<String, Object> msg = new HashMap<String, Object>();
 		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", ruleset.getRulesetId()).append("active", false).append("isProd", false)).iterator();
@@ -438,7 +438,7 @@ public class ClassificationResource {
 	@DELETE
 	@Path("/rulesets/{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public /* Response */ Map<String, Object> deleteRuleset(@PathParam("id") String id) {
 		Map<String, Object> msg = new HashMap<String, Object>();
 		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id)).append("isProd", false).append("active", true)).iterator();
@@ -459,7 +459,7 @@ public class ClassificationResource {
 	@DELETE
 	@Path("/rulesets")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public /* Response */ Map<String, String> deleteAllRulesets() {
 		slots.deleteMany(new Document());
 
@@ -474,7 +474,7 @@ public class ClassificationResource {
 	@GET
 	@Path("/rulesetshome")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, String> getRulesetsHome() {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("rulesetshome", RuleSets.getHome());
@@ -484,7 +484,7 @@ public class ClassificationResource {
 	@GET
 	@Path("/slot")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	@JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Integer> getAvailableSlot() {
 		Integer slot                       = null;
 		Map<String, Integer> map           = new HashMap<String, Integer>();
