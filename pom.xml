@@ -10,8 +10,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
 		<version.jdk>1.8</version.jdk>
-		<version.mvn.compiler>3.2</version.mvn.compiler>
-		<version.mvn.war.plugin>2.6</version.mvn.war.plugin>
+		<version.mvn.compiler>3.7.0</version.mvn.compiler>
+		<version.mvn.war.plugin>3.2.0</version.mvn.war.plugin>
 		<version.jersey>2.26</version.jersey>
 		<version.servlet.api>3.1.0</version.servlet.api>
 		<version.drools>6.5.0.Final</version.drools>
