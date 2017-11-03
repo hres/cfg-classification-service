@@ -38,6 +38,7 @@ public class ApplicationConfig extends Application {
 		resources.add(org.glassfish.jersey.jackson.JacksonFeature.class);
 		// resources.add(com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider.class);
 
+		resources.add(ca.gc.ip346.classification.cors.CORSFilter.class);
 		resources.add(ca.gc.ip346.classification.resource.ClassificationResource.class);
 		//==> we could also choose packages, see below getProperties()
 		System.out.println("[01;35m" + "Food Classification REST services (cfg-classification-service) configuration ended successfully." + "[00;00m");
