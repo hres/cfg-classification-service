@@ -392,10 +392,11 @@ public class ClassificationResource {
 		if (!cursorDocMap.hasNext()) {
 			msg.put("message", "Failed to create ruleset!");
 		} else {
-			firstLevelSets.add(set("name", ruleset.getName()));
+			firstLevelSets.add(set("name",   ruleset.getName()));
 			firstLevelSets.add(set("active", ruleset.isActive()));
 			firstLevelSets.add(set("isProd", ruleset.getIsProd()));
-			slots.updateOne(eq("rulesetId", ruleset.getRulesetId()), combine(firstLevelSets));
+			slots.updateOne(eq("rulesetId",  ruleset.getRulesetId()), combine(firstLevelSets));
+
 			msg.put("message", "Successfully created ruleset with ID: " + ruleset.getRulesetId().toString());
 		}
 		return msg;
@@ -443,12 +444,13 @@ public class ClassificationResource {
 	public /* Response */ Map<String, Object> deleteRuleset(@PathParam("id") String id) {
 		Map<String, Object> msg = new HashMap<String, Object>();
 		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id)).append("isProd", false).append("active", true)).iterator();
+		List<Bson> firstLevelSets = new ArrayList<Bson>();
 
 		if (!cursorDocMap.hasNext()) {
 			msg.put("message", "Failed to delete ruleset with id: " + id);
 		} else {
-			Document doc = cursorDocMap.next();
-			slots.deleteOne(doc);
+			firstLevelSets.add(set("active", false));
+			slots.updateOne(eq("rulesetId", Integer.valueOf(id)), combine(firstLevelSets));
 			msg.put("message", "Successfully deleted ruleset with id: " + id);
 		}
 
