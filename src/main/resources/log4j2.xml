@@ -7,12 +7,12 @@
 	<!ELEMENT Root          (AppenderRef)>
 	<!ELEMENT PatternLayout EMPTY>
 	<!ELEMENT AppenderRef   EMPTY>
-	<!ATTLIST Configuration status  CDATA #REQUIRED>
-	<!ATTLIST Console       name    CDATA #REQUIRED>
-	<!ATTLIST Console       target  CDATA #REQUIRED>
-	<!ATTLIST PatternLayout pattern CDATA #REQUIRED>
-	<!ATTLIST Root          level   CDATA #REQUIRED>
-	<!ATTLIST AppenderRef   ref     CDATA #REQUIRED>
+	<!ATTLIST Configuration status             CDATA #REQUIRED>
+	<!ATTLIST Console       name               CDATA #REQUIRED>
+	<!ATTLIST Console       target             CDATA #REQUIRED>
+	<!ATTLIST PatternLayout pattern            CDATA #REQUIRED>
+	<!ATTLIST Root          level              CDATA #REQUIRED>
+	<!ATTLIST AppenderRef   ref                CDATA #REQUIRED>
 ]>
 <Configuration status="WARN">
 	<Appenders>
