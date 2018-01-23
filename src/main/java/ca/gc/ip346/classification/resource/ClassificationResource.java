@@ -299,6 +299,7 @@ public class ClassificationResource {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 		logger.printf(DEBUG, "%s%22s%d%s", "[01;03;35m", "passed-in ruleset id: ", rulesetId, "[00;00m");
+		logger.debug("[01;03;35m" + "dataset passed in:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(dataset) + "[00;00m");
 
 		if (rulesetId == 0) {
 			rulesetId = getProductionRulesetId();
