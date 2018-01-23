@@ -95,6 +95,7 @@ public class CanadaFoodGuideDataset {
 	private Boolean sodiumFopWarning;
 	private Boolean marketedToKids;
 	private Integer initialCfgCode;
+	private Boolean missingData;
 
 	/**
 	 * @return the type
@@ -1107,5 +1108,19 @@ public class CanadaFoodGuideDataset {
 	 */
 	public void setInitialCfgCode(Integer initialCfgCode) {
 		this.initialCfgCode = initialCfgCode;
+	}
+
+	/**
+	 * @return the missingData
+	 */
+	public Boolean getMissingData() {
+		return missingData;
+	}
+
+	/**
+	 * @param missingData the missingData to set
+	 */
+	public void setMissingData(Boolean missingData) {
+		this.missingData = missingData;
 	}
 }
