@@ -1,218 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-	<!-- <kbase name="dtables.tier" packages="dtables.tier"> -->
-		<!-- <ksession name="ksession-process-5978b1480bf43e3c57bb470d-tier"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470e-tier"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470f-tier"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4710-tier"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4711-tier"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4712-tier"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8986-tier"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8987-tier"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8988-tier"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8989-tier"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898a-tier"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898b-tier"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ace-tier"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481acf-tier"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad0-tier"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad1-tier"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad2-tier"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad3-tier"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470a-tier"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470b-tier"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470c-tier"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470d-tier"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470e-tier"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470f-tier"/> -->
-	<!-- </kbase> -->
-	<!-- <kbase name="dtables.flags" packages="dtables.flags"> -->
-		<!-- <ksession name="ksession-process-5978b1480bf43e3c57bb470d-flags"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470e-flags"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470f-flags"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4710-flags"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4711-flags"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4712-flags"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8986-flags"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8987-flags"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8988-flags"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8989-flags"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898a-flags"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898b-flags"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ace-flags"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481acf-flags"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad0-flags"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad1-flags"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad2-flags"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad3-flags"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470a-flags"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470b-flags"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470c-flags"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470d-flags"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470e-flags"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470f-flags"/> -->
-	<!-- </kbase> -->
-	<!-- <kbase name="dtables.refamt" packages="dtables.refamt"> -->
-		<!-- <ksession name="ksession-process-5978b1480bf43e3c57bb470d-refamt"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470e-refamt"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470f-refamt"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4710-refamt"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4711-refamt"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4712-refamt"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8986-refamt"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8987-refamt"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8988-refamt"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8989-refamt"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898a-refamt"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898b-refamt"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ace-refamt"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481acf-refamt"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad0-refamt"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad1-refamt"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad2-refamt"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad3-refamt"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470a-refamt"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470b-refamt"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470c-refamt"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470d-refamt"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470e-refamt"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470f-refamt"/> -->
-	<!-- </kbase> -->
-	<!-- <kbase name="dtables.thresholds" packages="dtables.thresholds"> -->
-		<!-- <ksession name="ksession-process-5978b1480bf43e3c57bb470d-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470e-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470f-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4710-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4711-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4712-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8986-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8987-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8988-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8989-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898a-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898b-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ace-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481acf-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad0-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad1-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad2-thresholds"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad3-thresholds"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470a-thresholds"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470b-thresholds"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470c-thresholds"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470d-thresholds"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470e-thresholds"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470f-thresholds"/> -->
-	<!-- </kbase> -->
-	<!-- <kbase name="dtables.init" packages="dtables.init"> -->
-		<!-- <ksession name="ksession-process-5978b1480bf43e3c57bb470d-init"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470e-init"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470f-init"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4710-init"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4711-init"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4712-init"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8986-init"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8987-init"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8988-init"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8989-init"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898a-init"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898b-init"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ace-init"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481acf-init"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad0-init"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad1-init"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad2-init"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad3-init"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470a-init"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470b-init"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470c-init"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470d-init"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470e-init"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470f-init"/> -->
-	<!-- </kbase> -->
-	<!-- <kbase name="dtables.shortcut" packages="dtables.shortcut"> -->
-		<!-- <ksession name="ksession-process-5978b1480bf43e3c57bb470d-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470e-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470f-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4710-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4711-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4712-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8986-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8987-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8988-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8989-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898a-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898b-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ace-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481acf-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad0-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad1-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad2-shortcut"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad3-shortcut"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470a-shortcut"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470b-shortcut"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470c-shortcut"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470d-shortcut"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470e-shortcut"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470f-shortcut"/> -->
-	<!-- </kbase> -->
-	<!-- <kbase name="dtables.default" packages="dtables.default"> -->
-		<!-- <ksession name="ksession-process-5978b1480bf43e3c57bb470d-default"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470e-default"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470f-default"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4710-default"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4711-default"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4712-default"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8986-default"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8987-default"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8988-default"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8989-default"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898a-default"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898b-default"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ace-default"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481acf-default"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad0-default"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad1-default"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad2-default"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad3-default"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470a-default"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470b-default"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470c-default"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470d-default"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470e-default"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470f-default"/> -->
-	<!-- </kbase> -->
-	<!-- <kbase name="dtables.fop" packages="dtables.fop"> -->
-		<!-- <ksession name="ksession-process-5978b1480bf43e3c57bb470d-fop"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470e-fop"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb470f-fop"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4710-fop"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4711-fop"/> -->
-		<!-- <ksession name="ksession-process-5978b1490bf43e3c57bb4712-fop"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8986-fop"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8987-fop"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8988-fop"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e8989-fop"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898a-fop"/> -->
-		<!-- <ksession name="ksession-process-5991c7803113fd06f12e898b-fop"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ace-fop"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481acf-fop"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad0-fop"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad1-fop"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad2-fop"/> -->
-		<!-- <ksession name="ksession-process-5979e98369953d0cd1481ad3-fop"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470a-fop"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470b-fop"/> -->
-		<!-- <ksession name="ksession-process-59aff6b58c5f7b43e39a470c-fop"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470d-fop"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470e-fop"/> -->
-		<!-- <ksession name="ksession-process-59aff6b68c5f7b43e39a470f-fop"/> -->
-	<!-- </kbase> -->
 	<kbase name="dtables.refamt.1"     packages="dtables.refamt.1">
 		<ksession name="ksession-process-1-refamt"/>
 	</kbase>
-	<kbase name="dtables.refamt.2"     packages="dtables.refamt.2">
-		<ksession name="ksession-process-2-refamt"/>
+	<kbase name="dtables.refamt.2"     packages="dtables.refamt.2" default="true">
+		<ksession name="ksession-process-2-refamt" default="true"/>
 	</kbase>
 	<kbase name="dtables.refamt.3"     packages="dtables.refamt.3">
 		<ksession name="ksession-process-3-refamt"/>
@@ -259,8 +51,8 @@
 	<kbase name="dtables.fop.1"        packages="dtables.fop.1">
 		<ksession name="ksession-process-1-fop"/>
 	</kbase>
-	<kbase name="dtables.fop.2"        packages="dtables.fop.2">
-		<ksession name="ksession-process-2-fop"/>
+	<kbase name="dtables.fop.2"        packages="dtables.fop.2" default="true">
+		<ksession name="ksession-process-2-fop" default="true"/>
 	</kbase>
 	<kbase name="dtables.fop.3"        packages="dtables.fop.3">
 		<ksession name="ksession-process-3-fop"/>
@@ -307,8 +99,8 @@
 	<kbase name="dtables.shortcut.1"   packages="dtables.shortcut.1">
 		<ksession name="ksession-process-1-shortcut"/>
 	</kbase>
-	<kbase name="dtables.shortcut.2"   packages="dtables.shortcut.2">
-		<ksession name="ksession-process-2-shortcut"/>
+	<kbase name="dtables.shortcut.2"   packages="dtables.shortcut.2" default="true">
+		<ksession name="ksession-process-2-shortcut" default="true"/>
 	</kbase>
 	<kbase name="dtables.shortcut.3"   packages="dtables.shortcut.3">
 		<ksession name="ksession-process-3-shortcut"/>
@@ -355,8 +147,8 @@
 	<kbase name="dtables.thresholds.1" packages="dtables.thresholds.1">
 		<ksession name="ksession-process-1-thresholds"/>
 	</kbase>
-	<kbase name="dtables.thresholds.2" packages="dtables.thresholds.2">
-		<ksession name="ksession-process-2-thresholds"/>
+	<kbase name="dtables.thresholds.2" packages="dtables.thresholds.2" default="true">
+		<ksession name="ksession-process-2-thresholds" default="true"/>
 	</kbase>
 	<kbase name="dtables.thresholds.3" packages="dtables.thresholds.3">
 		<ksession name="ksession-process-3-thresholds"/>
@@ -403,8 +195,8 @@
 	<kbase name="dtables.init.1"       packages="dtables.init.1">
 		<ksession name="ksession-process-1-init"/>
 	</kbase>
-	<kbase name="dtables.init.2"       packages="dtables.init.2">
-		<ksession name="ksession-process-2-init"/>
+	<kbase name="dtables.init.2"       packages="dtables.init.2" default="true">
+		<ksession name="ksession-process-2-init" default="true"/>
 	</kbase>
 	<kbase name="dtables.init.3"       packages="dtables.init.3">
 		<ksession name="ksession-process-3-init"/>
@@ -451,8 +243,8 @@
 	<kbase name="dtables.tier.1"       packages="dtables.tier.1">
 		<ksession name="ksession-process-1-tier"/>
 	</kbase>
-	<kbase name="dtables.tier.2"       packages="dtables.tier.2">
-		<ksession name="ksession-process-2-tier"/>
+	<kbase name="dtables.tier.2"       packages="dtables.tier.2" default="true">
+		<ksession name="ksession-process-2-tier" default="true"/>
 	</kbase>
 	<kbase name="dtables.tier.3"       packages="dtables.tier.3">
 		<ksession name="ksession-process-3-tier"/>
