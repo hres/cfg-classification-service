@@ -16,13 +16,13 @@ To deploy [cfg-classification-service], do the following:
 4. `mvn clean install`
 5. copy `target/cfg-classification-service.war` to `webapps` directory of [Tomcat 8.0 on HRES]
 
-## Configure MongoDB
+~~## Configure MongoDB
 
-Copy and rename [mongodb.properties.template] to mongodb.properties
+~~Copy and rename [mongodb.properties.template] to mongodb.properties
 
-`cp mongdb.properties.template mongdb.properties`
+~~`cp mongdb.properties.template mongdb.properties`
 
-Change the `host` and `port` properties in the mongodb.properties file in order to allow the Java API to connect to it.
+~~Change the `host` and `port` properties in the mongodb.properties file in order to allow the Java API to connect to it.
 
 ## Configure Drools
 
