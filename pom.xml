@@ -78,7 +78,7 @@
 				<executions>
 					<execution>
 						<id>Renaming build artifacts</id>
-						<phase>compile</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>exec</goal>
 						</goals>
@@ -93,6 +93,12 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${version.mvn.war.plugin}</version>
+				<executions>
+					<execution>
+						<id>Packaging build artifacts</id>
+						<phase>package</phase>
+					</execution>
+				</executions>
 				<configuration>
 					<failOnMissingWebXml>true</failOnMissingWebXml>
 					<archive>
