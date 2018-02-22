@@ -52,9 +52,12 @@ public class CanadaFoodGuideDataset {
 	private Boolean   rolledUp;                           /* smallint         */
 	private Date      rolledUpUpdateDate;                 /* date             */
 	private Boolean   overrideSmallRaAdjustment;          /* smallint         */
+	private Date      overrideSmallRaAdjustmentUpdateDate;/* date             */
 	private Integer   replacementCode;                    /* integer          */
+	private Date      replacementCodeUpdateDate;          /* date             */
 	private Date      commitDate;                         /* date             */
 	private String    comments;                           /* text             */
+	private Date      commentsUpdateDate;                 /* date             */
 
 	// remember that this food-item has been validated
 	private Boolean validated;
@@ -94,6 +97,7 @@ public class CanadaFoodGuideDataset {
 	private Boolean sugarFopWarning;
 	private Boolean sodiumFopWarning;
 	private Boolean marketedToKids;
+	private Date    marketedToKidsUpdateDate;
 	private Integer initialCfgCode;
 	private Boolean missingData;
 
@@ -784,6 +788,20 @@ public class CanadaFoodGuideDataset {
 	}
 
 	/**
+	 * @return the overrideSmallRaAdjustmentUpdateDate
+	 */
+	public Date getOverrideSmallRaAdjustmentUpdateDate() {
+		return overrideSmallRaAdjustmentUpdateDate;
+	}
+
+	/**
+	 * @param overrideSmallRaAdjustmentUpdateDate the overrideSmallRaAdjustmentUpdateDate to set
+	 */
+	public void setOverrideSmallRaAdjustmentUpdateDate(Date overrideSmallRaAdjustmentUpdateDate) {
+		this.overrideSmallRaAdjustmentUpdateDate = overrideSmallRaAdjustmentUpdateDate;
+	}
+
+	/**
 	 * @return the replacementCode
 	 */
 	public Integer getReplacementCode() {
@@ -795,6 +813,20 @@ public class CanadaFoodGuideDataset {
 	 */
 	public void setReplacementCode(Integer replacementCode) {
 		this.replacementCode = replacementCode;
+	}
+
+	/**
+	 * @return the replacementCodeUpdateDate
+	 */
+	public Date getReplacementCodeUpdateDate() {
+		return replacementCodeUpdateDate;
+	}
+
+	/**
+	 * @param replacementCodeUpdateDate the replacementCodeUpdateDate to set
+	 */
+	public void setReplacementCodeUpdateDate(Date replacementCodeUpdateDate) {
+		this.replacementCodeUpdateDate = replacementCodeUpdateDate;
 	}
 
 	/**
@@ -823,6 +855,20 @@ public class CanadaFoodGuideDataset {
 	 */
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	/**
+	 * @return the commentsUpdateDate
+	 */
+	public Date getCommentsUpdateDate() {
+		return commentsUpdateDate;
+	}
+
+	/**
+	 * @param commentsUpdateDate the commentsUpdateDate to set
+	 */
+	public void setCommentsUpdateDate(Date commentsUpdateDate) {
+		this.commentsUpdateDate = commentsUpdateDate;
 	}
 
 	/**
@@ -1094,6 +1140,20 @@ public class CanadaFoodGuideDataset {
 
 	public void setMarketedToKids(Boolean marketedToKids) {
 		this.marketedToKids = marketedToKids;
+	}
+
+	/**
+	 * @return the marketedToKidsUpdateDate
+	 */
+	public Date getMarketedToKidsUpdateDate() {
+		return marketedToKidsUpdateDate;
+	}
+
+	/**
+	 * @param marketedToKidsUpdateDate the marketedToKidsUpdateDate to set
+	 */
+	public void setMarketedToKidsUpdateDate(Date marketedToKidsUpdateDate) {
+		this.marketedToKidsUpdateDate = marketedToKidsUpdateDate;
 	}
 
 	/**
