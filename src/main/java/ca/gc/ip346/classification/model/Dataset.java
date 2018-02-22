@@ -10,7 +10,8 @@ public class Dataset {
 	private String owner;
 	private String status;
 	private String comments;
-	private Date modifiedDate;
+	private Date   modifiedDate;
+	private Date   creationDate;
 
 	public List<CanadaFoodGuideDataset> getData() {
 		return data;
@@ -66,5 +67,13 @@ public class Dataset {
 
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 }
