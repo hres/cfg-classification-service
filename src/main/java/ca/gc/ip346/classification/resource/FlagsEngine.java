@@ -39,18 +39,19 @@ public class FlagsEngine {
 	}
 
 	/**
-	 * @param ruleset the ruleset to set
+	 * @param releaseId the releaseId to use
+	 * @param ruleset the ruleset to use
 	 * @return this instance
 	 */
 	public FlagsEngine setReleaseIdAndRuleset(ReleaseId releaseId, String ruleset) {
 		KieServices ks          = KieServices.Factory.get();
-		KieContainer kContainer = ks.getKieClasspathContainer();
-		// KieContainer kContainer = ks.newKieContainer(releaseId);
+		// KieContainer kContainer = ks.getKieClasspathContainer();
+		KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
 		String kSessionName = "ksession-process-" + ruleset + "-refamt";
 		logger.debug("[01;03;35m" + "kSessionName: " + kSessionName + "[00;00m");
 		logger.debug("[01;03;35m" + "ReleaseId: " + releaseId + "[00;00m");
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt")) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt." + ruleset)) + "[00;00m");
 		kieSessionPipeline.add(kContainer.newKieSession(kSessionName));
 
 
@@ -58,7 +59,7 @@ public class FlagsEngine {
 
 
 
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt")) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt." + ruleset)) + "[00;00m");
 		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-refamt" + "[00;00m");
 
 		return this;
@@ -76,7 +77,7 @@ public class FlagsEngine {
 			// boolean setRA = false;
 			for (int i = 0; i < kieSessionPipeline.size(); i++) {
 				if (!food.isDone()) {
-logger.debug("[01;03;31m" + "HERE: \n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(food) + "[00;00m");
+// logger.debug("[01;03;31m" + "HERE: \n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(food) + "[00;00m");
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
 					/* only call this after adjustedRA is set */

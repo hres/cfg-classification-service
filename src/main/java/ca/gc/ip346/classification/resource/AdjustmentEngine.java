@@ -39,18 +39,19 @@ public class AdjustmentEngine {
 	}
 
 	/**
-	 * @param ruleset the ruleset to set
+	 * @param releaseId the releaseId to use
+	 * @param ruleset the ruleset to use
 	 * @return this instance
 	 */
 	public AdjustmentEngine setReleaseIdAndRuleset(ReleaseId releaseId, String ruleset) {
 		KieServices ks          = KieServices.Factory.get();
-		KieContainer kContainer = ks.getKieClasspathContainer();
-		// KieContainer kContainer = ks.newKieContainer(releaseId);
+		// KieContainer kContainer = ks.getKieClasspathContainer();
+		KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
 		String kSessionName = "ksession-process-" + ruleset + "-tier";
 		logger.debug("[01;03;35m" + "kSessionName: " + kSessionName + "[00;00m");
 		logger.debug("[01;03;35m" + "ReleaseId: " + releaseId + "[00;00m");
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.tier")) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.tier." + ruleset)) + "[00;00m");
 		kieSessionPipeline.add(kContainer.newKieSession(kSessionName));
 
 
@@ -58,7 +59,7 @@ public class AdjustmentEngine {
 
 
 
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.tier")) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.tier." + ruleset)) + "[00;00m");
 		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-tier" + "[00;00m");
 
 		return this;

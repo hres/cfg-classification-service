@@ -3,6 +3,7 @@ package ca.gc.ip346.classification.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kie.api.KieServices;
@@ -38,22 +39,23 @@ public class InitEngine {
 	}
 
 	/**
-	 * @param ruleset the ruleset to set
+	 * @param releaseId the releaseId to use
+	 * @param ruleset the ruleset to use
 	 * @return this instance
 	 */
 	public InitEngine setReleaseIdAndRuleset(ReleaseId releaseId, String ruleset) {
 		KieServices ks          = KieServices.Factory.get();
-		KieContainer kContainer = ks.getKieClasspathContainer();
-		// KieContainer kContainer = ks.newKieContainer(releaseId);
+		// KieContainer kContainer = ks.getKieClasspathContainer();
+		KieContainer kContainer = ks.newKieContainer(releaseId);
 		kieSessionPipeline      = new ArrayList<KieSession>();
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-fop"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-shortcut"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-thresholds"));
 		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-init"));
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.fop"))        + "[00;00m");
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.shortcut"))   + "[00;00m");
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.thresholds")) + "[00;00m");
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.init"))       + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.fop."        + ruleset)) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.shortcut."   + ruleset)) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.thresholds." + ruleset)) + "[00;00m");
+		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.init."       + ruleset)) + "[00;00m");
 
 		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-fop"        + "[00;00m");
 		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-shortcut"   + "[00;00m");
