@@ -1,13 +1,22 @@
 package ca.gc.ip346.classification.resource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.logging.log4j.Level.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.io.ResourceType;
 // import org.kie.api.cdi.KSession;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -23,6 +32,8 @@ public class FlagsEngine {
 	/* The pipeline is used to rule the drools rules one at a time */
 	private List<KieSession> kieSessionPipeline;
 	private List<CanadaFoodGuideDataset> foodResults;
+	
+	static Map<String, KieBase> kieBaseCache =  new HashMap<>();
 
 	/* recreates singleton */
 	public static void refreshEngine() {
@@ -43,24 +54,10 @@ public class FlagsEngine {
 	 * @param ruleset the ruleset to use
 	 * @return this instance
 	 */
-	public FlagsEngine setReleaseIdAndRuleset(ReleaseId releaseId, String ruleset) {
-		KieServices ks          = KieServices.Factory.get();
-		// KieContainer kContainer = ks.getKieClasspathContainer();
-		KieContainer kContainer = ks.newKieContainer(releaseId);
+	public FlagsEngine setReleaseIdAndRuleset(String rulePath, String ruleset) {
+		
 		kieSessionPipeline      = new ArrayList<KieSession>();
-		String kSessionName = "ksession-process-" + ruleset + "-refamt";
-		logger.debug("[01;03;35m" + "kSessionName: " + kSessionName + "[00;00m");
-		logger.debug("[01;03;35m" + "ReleaseId: " + releaseId + "[00;00m");
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt." + ruleset)) + "[00;00m");
-		kieSessionPipeline.add(kContainer.newKieSession(kSessionName));
-
-
-
-
-
-
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.refamt." + ruleset)) + "[00;00m");
-		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-refamt" + "[00;00m");
+		kieSessionPipeline.add(getKieSession(rulePath, ruleset, ClassificationResource.FoodRuleNames.REFAMT.ruleName()));
 
 		return this;
 	}
@@ -78,8 +75,10 @@ public class FlagsEngine {
 			for (int i = 0; i < kieSessionPipeline.size(); i++) {
 				if (!food.isDone()) {
 // logger.debug("[01;03;31m" + "HERE: \n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(food) + "[00;00m");
+					
 					kieSessionPipeline.get(i).insert(food);
 					kieSessionPipeline.get(i).fireAllRules();
+					
 					/* only call this after adjustedRA is set */
 					calculatePerRA(food);
 					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "how many rulesets: "                   , kieSessionPipeline.size()           , "[00;00m");
@@ -90,14 +89,48 @@ public class FlagsEngine {
 				}
 			}
 			logger.debug("[01;03;31m" + "firing Drools" + "[00;00m");
-
-
-
-
-
-
 			foodResults.add(food);
 		}
+	}
+	
+	private KieSession getKieSession(String rulePath, String ruleSetId, String name) {
+		
+		KieSession kieSession = null;
+		String kieSessionName = "ksession-process-" + ruleSetId + "-" + name;
+		if (kieBaseCache.get(kieSessionName) == null) {
+	
+			KieServices ks          = KieServices.Factory.get();
+			String inMemoryFileName = rulePath  + name + "/" + ruleSetId + "/" + name + ruleSetId + ".xls";
+			KieFileSystem kfs = ks.newKieFileSystem();
+			kfs.write(ks.getResources().newFileSystemResource(inMemoryFileName)
+					.setResourceType(ResourceType.DTABLE));
+			
+			KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+			
+			if (kieBuilder.getResults().hasMessages(Message.Level.ERROR)) {
+				System.out.println(kieBuilder.getResults().toString());
+			}
+			KieContainer kContainer = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+			//KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+			//KieSession kSession = kContainer.getKieSession(kbconf);
+			KieBase kbase = kContainer.getKieBase();
+			
+			//get rule
+			logger.debug("Get Rule : " + kbase.getKiePackages().size());
+	        for ( KiePackage kp : kbase.getKiePackages() ) {
+	            for (Rule rule : kp.getRules()) {
+	            	logger.debug("Flags Get Rule From FlagsEngine App==================" + kp + " rule name: " + rule.getName());
+	            }
+	        }
+			kieSession = kbase.newKieSession();
+			System.out.println("Flags Put rules KieBase into Custom Cache=============");
+			kieBaseCache.put(kieSessionName, kbase);
+		}else {
+			System.out.println("Get existing rules KieBase from Init=================Custom Cache");
+			kieSession = kieBaseCache.get(kieSessionName).newKieSession();
+		}
+		return kieSession;
+		
 	}
 
 	private void prepare(CanadaFoodGuideDataset food) {

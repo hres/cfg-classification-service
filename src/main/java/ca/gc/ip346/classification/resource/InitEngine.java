@@ -1,13 +1,23 @@
 package ca.gc.ip346.classification.resource;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.apache.logging.log4j.Level.DEBUG;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.io.ResourceType;
 // import org.kie.api.cdi.KSession;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -23,6 +33,7 @@ public class InitEngine {
 	/* The pipeline is used to rule the drools rules one at a time */
 	private List<KieSession> kieSessionPipeline;
 	private List<CanadaFoodGuideDataset> foodResults;
+	static Map<String, KieBase> kieBaseCache =  new HashMap<>();
 
 	/* recreates singleton */
 	public static void refreshEngine() {
@@ -43,24 +54,13 @@ public class InitEngine {
 	 * @param ruleset the ruleset to use
 	 * @return this instance
 	 */
-	public InitEngine setReleaseIdAndRuleset(ReleaseId releaseId, String ruleset) {
-		KieServices ks          = KieServices.Factory.get();
-		// KieContainer kContainer = ks.getKieClasspathContainer();
-		KieContainer kContainer = ks.newKieContainer(releaseId);
+	public InitEngine setReleaseIdAndRuleset(String rulePath, String ruleset) {
 		kieSessionPipeline      = new ArrayList<KieSession>();
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-fop"));
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-shortcut"));
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-thresholds"));
-		kieSessionPipeline.add(kContainer.newKieSession("ksession-process-" + ruleset + "-init"));
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.fop."        + ruleset)) + "[00;00m");
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.shortcut."   + ruleset)) + "[00;00m");
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.thresholds." + ruleset)) + "[00;00m");
-		logger.debug("[01;03;31m" + "\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase("dtables.init."       + ruleset)) + "[00;00m");
-
-		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-fop"        + "[00;00m");
-		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-shortcut"   + "[00;00m");
-		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-thresholds" + "[00;00m");
-		logger.debug("[01;03;31m" + "ksession-process-" + ruleset + "-init"       + "[00;00m");
+	
+		kieSessionPipeline.add(getKieSession(rulePath, ruleset, ClassificationResource.FoodRuleNames.FOP.ruleName()));
+		kieSessionPipeline.add(getKieSession(rulePath, ruleset, ClassificationResource.FoodRuleNames.SHORTCUT.ruleName()));
+		kieSessionPipeline.add(getKieSession(rulePath, ruleset, ClassificationResource.FoodRuleNames.THRESHOLDS.ruleName()));
+		kieSessionPipeline.add(getKieSession(rulePath, ruleset, ClassificationResource.FoodRuleNames.INIT.ruleName()));
 
 		return this;
 	}
@@ -71,6 +71,7 @@ public class InitEngine {
 	 *       in: foods
 	 */
 	private void fireDrools(List<CanadaFoodGuideDataset> foods) {
+		KieSession kieSession = null;
 		for (CanadaFoodGuideDataset food : foods) {
 
 			prepare(food);
@@ -78,25 +79,64 @@ public class InitEngine {
 			for (int i = 0; i < kieSessionPipeline.size(); i++) {
 				if (!food.isDone()) {
 					kieSessionPipeline.get(i).insert(food);
-					kieSessionPipeline.get(i).fireAllRules();
+					
+					kieSession = kieSessionPipeline.get(i);
+					
+					int ruleFiredCount = kieSession.fireAllRules();
+					
+					System.out.println("Initila.........触发了" + ruleFiredCount + "条规则");
+
 					logger.debug("[01;03;31m" + kieSessionPipeline.size() + "[00;00m");
-
-
-
-
-
-
 				}
 			}
-			logger.debug("[01;03;31m" + "firing Drools" + "[00;00m");
-
-			logger.debug("[01;03;31m" + "CFG code: " + food.getCfgCode() + " tier: " + food.getTier() + "[00;00m");
+			
+			logger.debug("[01;03;31m" + "Final==========CFG code: " + food.getCfgCode() + " ====tier: " + food.getTier() + "[00;00m");
 			String firstThreeDigits = food.getCfgCode() + "";
 			food.setInitialCfgCode(Integer.parseInt(firstThreeDigits.substring(0, 3) + food.getTier()));
-			logger.debug("[01;03;31m" + "initial CFG code: " + food.getInitialCfgCode() + "[00;00m");
+			logger.debug("[01;03;31m" + "Fianl=======initial CFG code: " + food.getInitialCfgCode() + "[00;00m");
 
 			foodResults.add(food);
 		}
+	}
+	
+	private KieSession getKieSession(String rulePath, String ruleSetId, String name) {
+		
+		KieSession kieSession = null;
+		String kieSessionName = "ksession-process-" + ruleSetId + "-" + name;
+		if (kieBaseCache.get(kieSessionName) == null) {
+	
+			KieServices ks          = KieServices.Factory.get();
+			String inMemoryFileName = rulePath + name + "/" + ruleSetId + "/" + name + ruleSetId + ".xls";
+			KieFileSystem kfs = ks.newKieFileSystem();
+			kfs.write(ks.getResources().newFileSystemResource(inMemoryFileName)
+					.setResourceType(ResourceType.DTABLE));
+			
+			KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+			
+			if (kieBuilder.getResults().hasMessages(Message.Level.ERROR)) {
+				System.out.println(kieBuilder.getResults().toString());
+			}
+			KieContainer kContainer = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+			//KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+			//KieSession kSession = kContainer.getKieSession(kbconf);
+			KieBase kbase = kContainer.getKieBase();
+			
+			//get rule
+			logger.debug("Get Rule : " + kbase.getKiePackages().size());
+	        for ( KiePackage kp : kbase.getKiePackages() ) {
+	            for (Rule rule : kp.getRules()) {
+	            	logger.debug("Get Rule From InitEngine App==================" + kp + " rule name: " + rule.getName());
+	            }
+	        }
+			kieSession = kbase.newKieSession();
+			System.out.println("Init Put rules KieBase into Custom Cache============");
+			kieBaseCache.put(kieSessionName, kbase);
+		}else {
+			System.out.println("Get existing rules KieBase from Init===================Custom Cache");
+			kieSession = kieBaseCache.get(kieSessionName).newKieSession();
+		}
+		return kieSession;
+		
 	}
 
 	private void prepare(CanadaFoodGuideDataset food) {
@@ -125,6 +165,4 @@ public class InitEngine {
 		food.setSodiumDV         (15.0);
 		food.setSatFatDV         (15.0);
 	}
-
-
 }

@@ -7,8 +7,10 @@ import static com.mongodb.client.model.Updates.currentDate;
 import static com.mongodb.client.model.Updates.set;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -36,15 +40,26 @@ import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+
 import static org.kie.api.conf.DeclarativeAgendaOption.*;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.io.ResourceFactory;
 
 // import com.fasterxml.jackson.databind.SerializationFeature;
 // import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
@@ -63,6 +78,7 @@ import ca.gc.ip346.util.RuleSets;
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class ClassificationResource {
+	
 	private static final Logger logger           = LogManager.getLogger(ClassificationResource.class);
 	private List<String> rules                   = null;
 	private List<String> sessions                = null;
@@ -71,7 +87,27 @@ public class ClassificationResource {
 	private MongoCollection<Document> slots      = null;
 	private ReleaseId releaseId                  = null;
 	private Integer productionRulesetId          = null;
+	
+	public enum FoodRuleNames{
+		  REFAMT("refamt"), 
+		  FOP("fop"), 
+		  SHORTCUT("shortcut"), 
+		  THRESHOLDS("thresholds"),
+		  INIT("init"),
+		  TIER("tier");
+		
+		private String ruleName;
 
+	    FoodRuleNames(String ruleName) {
+	        this.ruleName = ruleName;
+	    }
+
+	    public String ruleName() {
+	        return ruleName;
+	    }
+		  
+	};
+	
 	/**
 	 *
 	 * Obtain the complete set of rulesets from kmodule.xml - a list of identifiers: one per ruleset
@@ -80,6 +116,7 @@ public class ClassificationResource {
 	 *
 	 */
 	public ClassificationResource() {
+		
 		mongoClient = MongoClientFactory.getMongoClient();
 		collection  = mongoClient.getDatabase(MongoClientFactory.getDatabase()).getCollection(MongoClientFactory.getCollection());
 		slots       = mongoClient.getDatabase(MongoClientFactory.getDatabase()).getCollection(MongoClientFactory.getAnotherCollection());
@@ -94,194 +131,99 @@ public class ClassificationResource {
 			productionRulesetId = (Integer)doc.get("rulesetId");
 			logger.debug("[01;03;31m" + "ruleset:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(doc) + "[00;00m");
 		}
-
+		
 		rules                         = new ArrayList<String>();
 		sessions                      = new ArrayList<String>();
 		List<String> rools            = new ArrayList<String>(Arrays.asList("refamt", "fop", "shortcut", "thresholds", "init", "tier"));
-		// List<String> rools            = new ArrayList<String>();
-
-		// rools.add("refamt");
-		// rools.add("fop");
-		// rools.add("shortcut");
-		// rools.add("thresholds");
-		// rools.add("init");
-		// rools.add("tier");
-
 		KieServices ks                = KieServices.Factory.get();
 		KieModuleModel kieModuleModel = ks.newKieModuleModel();
-
-		// KieBaseModel kieBaseModel1 = kieModuleModel.newKieBaseModel("dtables.refamt")     .addPackage("dtables.refamt")     .setDeclarativeAgenda(ENABLED);
-		// KieBaseModel kieBaseModel2 = kieModuleModel.newKieBaseModel("dtables.fop")        .addPackage("dtables.fop")        .setDeclarativeAgenda(ENABLED);
-		// KieBaseModel kieBaseModel3 = kieModuleModel.newKieBaseModel("dtables.shortcut")   .addPackage("dtables.shortcut")   .setDeclarativeAgenda(ENABLED);
-		// KieBaseModel kieBaseModel4 = kieModuleModel.newKieBaseModel("dtables.thresholds") .addPackage("dtables.thresholds") .setDeclarativeAgenda(ENABLED);
-		// KieBaseModel kieBaseModel5 = kieModuleModel.newKieBaseModel("dtables.init")       .addPackage("dtables.init")       .setDeclarativeAgenda(ENABLED);
-		// KieBaseModel kieBaseModel6 = kieModuleModel.newKieBaseModel("dtables.tier")       .addPackage("dtables.tier")       .setDeclarativeAgenda(ENABLED);
-
-		/* KieSessionModel kieSessionModel1 = */ // kieBaseModel1.newKieSessionModel("ksession-process-refamt")     ;
-		/* KieSessionModel kieSessionModel2 = */ // kieBaseModel2.newKieSessionModel("ksession-process-fop")        ;
-		/* KieSessionModel kieSessionModel3 = */ // kieBaseModel3.newKieSessionModel("ksession-process-shortcut")   ;
-		/* KieSessionModel kieSessionModel4 = */ // kieBaseModel4.newKieSessionModel("ksession-process-thresholds") ;
-		/* KieSessionModel kieSessionModel5 = */ // kieBaseModel5.newKieSessionModel("ksession-process-init")       ;
-		/* KieSessionModel kieSessionModel6 = */ // kieBaseModel6.newKieSessionModel("ksession-process-tier")       ;
-
+		
 		List<KieBaseModel> arr = new ArrayList<KieBaseModel>();
-		for (int i = 0, ruleId = i; i < 16; ++i) {
-			int rulesetId = i + 1;
-			for (String rule : rools) {
-				String name = "dtables." + rule + "." + rulesetId;
-				String session = "ksession-process-" + rulesetId + "-" + rule;
-				KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(name).addPackage(name).setDeclarativeAgenda(ENABLED);
-				if (productionRulesetId.equals(rulesetId)) {
-					kieBaseModel.setDefault(true);
-				}
-				arr .add(kieBaseModel);
-				arr .get(ruleId++) .newKieSessionModel(session) .setDefault(productionRulesetId.equals(rulesetId)) .setType(KieSessionModel.KieSessionType.STATEFUL) ;
-			}
-		}
-
-		// logger.debug(Arrays.asList(arr));
-
+		List<KieModuleModel> arrKieModuleModel = new ArrayList<KieModuleModel>();
 		KieFileSystem kfs = ks.newKieFileSystem();
-
+		//ini
+		int ruleSetId = 0;
+		String baseName = null;
+		String packageName = null;
+		String sessionName = null;
+		
 		try {
+			String file = null;
+			String pName = null;
 			for (String rule : rools) {
 				for (int i = 0; i < 16; ++i) {
-					String file = "/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls";
-					logger.debug(file);
-					// logger.debug("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls");
-					// kfs.write(ks.getResources().newFileSystemResource("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls"));
-					// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + ".xls", ks.getResources().newInputStreamResource(new FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls")));
-					kfs.write(file, ks.getResources().newInputStreamResource(new BufferedInputStream(new FileInputStream(file))));
-					// kfs.write(file, ks.getResources().newInputStreamResource(this.getClass().getResourceAsStream(file)));
+					file = "/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls";
+					pName = "src/main/resources/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls";;
+					kfs.write(ks.getResources().newFileSystemResource(file)
+							.setResourceType(ResourceType.DTABLE));
 				}
 			}
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/1/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/1/refamt.xls")          )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/2/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/2/refamt.xls")          )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/3/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/3/refamt.xls")          )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/4/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/4/refamt.xls")          )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/5/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/5/refamt.xls")          )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/6/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/6/refamt.xls")          )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/7/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/7/refamt.xls")          )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/8/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/8/refamt.xls")          )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/9/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/9/refamt.xls")          )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/10/refamt.xls",         ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/10/refamt.xls")         )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/11/refamt.xls",         ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/11/refamt.xls")         )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/12/refamt.xls",         ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/12/refamt.xls")         )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/13/refamt.xls",         ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/13/refamt.xls")         )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/14/refamt.xls",         ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/14/refamt.xls")         )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/15/refamt.xls",         ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/15/refamt.xls")         )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/16/refamt.xls",         ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/16/refamt.xls")         )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/1/fop.xls",                ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/1/fop.xls")                )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/2/fop.xls",                ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/2/fop.xls")                )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/3/fop.xls",                ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/3/fop.xls")                )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/4/fop.xls",                ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/4/fop.xls")                )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/5/fop.xls",                ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/5/fop.xls")                )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/6/fop.xls",                ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/6/fop.xls")                )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/7/fop.xls",                ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/7/fop.xls")                )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/8/fop.xls",                ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/8/fop.xls")                )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/9/fop.xls",                ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/9/fop.xls")                )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/10/fop.xls",               ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/10/fop.xls")               )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/11/fop.xls",               ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/11/fop.xls")               )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/12/fop.xls",               ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/12/fop.xls")               )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/13/fop.xls",               ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/13/fop.xls")               )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/14/fop.xls",               ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/14/fop.xls")               )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/15/fop.xls",               ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/15/fop.xls")               )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/16/fop.xls",               ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/fop/16/fop.xls")               )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/1/shortcut.xls",      ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/1/shortcut.xls")      )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/2/shortcut.xls",      ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/2/shortcut.xls")      )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/3/shortcut.xls",      ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/3/shortcut.xls")      )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/4/shortcut.xls",      ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/4/shortcut.xls")      )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/5/shortcut.xls",      ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/5/shortcut.xls")      )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/6/shortcut.xls",      ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/6/shortcut.xls")      )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/7/shortcut.xls",      ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/7/shortcut.xls")      )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/8/shortcut.xls",      ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/8/shortcut.xls")      )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/9/shortcut.xls",      ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/9/shortcut.xls")      )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/10/shortcut.xls",     ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/10/shortcut.xls")     )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/11/shortcut.xls",     ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/11/shortcut.xls")     )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/12/shortcut.xls",     ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/12/shortcut.xls")     )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/13/shortcut.xls",     ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/13/shortcut.xls")     )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/14/shortcut.xls",     ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/14/shortcut.xls")     )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/15/shortcut.xls",     ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/15/shortcut.xls")     )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/16/shortcut.xls",     ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/shortcut/16/shortcut.xls")     )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/1/thresholds.xls",  ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/1/thresholds.xls")  )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/2/thresholds.xls",  ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/2/thresholds.xls")  )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/3/thresholds.xls",  ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/3/thresholds.xls")  )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/4/thresholds.xls",  ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/4/thresholds.xls")  )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/5/thresholds.xls",  ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/5/thresholds.xls")  )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/6/thresholds.xls",  ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/6/thresholds.xls")  )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/7/thresholds.xls",  ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/7/thresholds.xls")  )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/8/thresholds.xls",  ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/8/thresholds.xls")  )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/9/thresholds.xls",  ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/9/thresholds.xls")  )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/10/thresholds.xls", ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/10/thresholds.xls") )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/11/thresholds.xls", ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/11/thresholds.xls") )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/12/thresholds.xls", ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/12/thresholds.xls") )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/13/thresholds.xls", ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/13/thresholds.xls") )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/14/thresholds.xls", ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/14/thresholds.xls") )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/15/thresholds.xls", ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/15/thresholds.xls") )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/16/thresholds.xls", ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/thresholds/16/thresholds.xls") )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/1/init.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/1/init.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/2/init.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/2/init.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/3/init.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/3/init.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/4/init.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/4/init.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/5/init.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/5/init.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/6/init.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/6/init.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/7/init.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/7/init.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/8/init.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/8/init.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/9/init.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/9/init.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/10/init.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/10/init.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/11/init.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/11/init.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/12/init.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/12/init.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/13/init.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/13/init.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/14/init.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/14/init.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/15/init.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/15/init.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/16/init.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/init/16/init.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/1/tier.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/1/tier.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/2/tier.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/2/tier.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/3/tier.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/3/tier.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/4/tier.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/4/tier.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/5/tier.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/5/tier.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/6/tier.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/6/tier.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/7/tier.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/7/tier.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/8/tier.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/8/tier.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/9/tier.xls",              ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/9/tier.xls")              )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/10/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/10/tier.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/11/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/11/tier.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/12/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/12/tier.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/13/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/13/tier.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/14/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/14/tier.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/15/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/15/tier.xls")             )));
-			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/16/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/16/tier.xls")             )));
-		} catch(FileNotFoundException e) {
+	
+		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
 		}
+		
+		for (int i = 0, ruleId = i; i < 16; ++i) {
+			ruleSetId = i + 1;
+			for (String rule : rools) {
+				baseName = "dtables." + rule + "." + ruleSetId;
+				packageName = "dtables.tier";
+				sessionName = "ksession-process-" + ruleSetId + "-" + rule;
+				
+				//KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(baseName).addPackage(packageName).setDeclarativeAgenda(ENABLED);
+				//wma teset
+				KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(baseName);
+				kieBaseModel.addPackage(packageName);
+				
+				kieBaseModel.addInclude(baseName);
+				kieBaseModel.newKieSessionModel(sessionName);
+				//wma atest over
+				if (productionRulesetId.equals(ruleSetId)) {
+					kieBaseModel.setDefault(true);
+				}
+				arr .add(kieBaseModel);
+				arr .get(ruleId++) .newKieSessionModel(sessionName) .setDefault(productionRulesetId.equals(ruleSetId)) .setType(KieSessionModel.KieSessionType.STATEFUL) ;
+			}
+		}
 
 		kfs.writeKModuleXML(kieModuleModel.toXML());
+		
 		// ks.newKieBuilder(kfs).buildAll();
 		// this.releaseId = ks.getRepository().getDefaultReleaseId();
-		KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
+		//KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
+		KieBuilder builder = ks.newKieBuilder(kfs);
+		
+		Results results = builder.getResults();
+		
+		if( results.hasMessages( Message.Level.INFO ) ){
+		    System.out.println( results.getMessages() );
+		        //throw new IllegalStateException( "### errors ###" );
+		}
+		builder.buildAll();
 		this.releaseId = builder.getKieModule().getReleaseId();
+		//this.releaseId = ks.getRepository().getDefaultReleaseId();
 
-		logger.debug("[01;03;31m" + "dynamically built kmodule:\n" + (kieModuleModel.toXML()) + "[00;00m");
-
+		//logger.debug("[01;03;31m" + "dynamically built kmodule:\n" + (kieModuleModel.toXML()) + "[00;00m");
 		// KieContainer kContainer = ks.getKieClasspathContainer(); // returns KieContainer for the classpath, this a global singleton
 		KieContainer kContainer = ks.newKieContainer(this.releaseId);
+		
 		String pattern          = "ksession-process-(\\S+)-\\w+";
 
-		logger.debug("[01;03;31m" + "complete set of dynamically built rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames())                    + "[00;00m");
+		//logger.debug("[01;03;31m" + "complete set of dynamically built rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieBaseNames())                    + "[00;00m");
 		// creates a new KieContainer for the classpath, regardless if there's already an existing one: ks.newKieClasspathContainer() versus ks.getKieClasspathContainer()
-		logger.debug("[01;03;31m" + "complete set of dynamically built rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ks.newKieClasspathContainer().getKieBaseNames()) + "[00;00m");
+		//logger.debug("[01;03;31m" + "complete set of dynamically built rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(ks.newKieClasspathContainer().getKieBaseNames()) + "[00;00m");
 
 		/**
 		 * six rulesets get created - this is arbitrary - six if using dynamically created KieModuleModel, not the classpath
 		 * sixteen rulesets get created - this is arbitrary - sixteen if using the classpath
 		 */
 		for (String kieBaseName : kContainer.getKieBaseNames()) {
-			logger.debug("[01;03;33m" + "session count:  " + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName).size()) + "[00;00m");
-			logger.debug("[01;03;31m" + "session names:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(kContainer.getKieSessionNamesInKieBase(kieBaseName))        + "[00;00m");
 			for (String session : kContainer.getKieSessionNamesInKieBase(kieBaseName)) {
 				sessions.add(session);
+				//logger.debug("[01;03;31m" + "session to string:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(session.toString())        + "[00;00m");
 				String rule = session.replaceAll(pattern, "$1");
+				logger.debug("========rule name......[01;03;31m" + "session.replaceAll():\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rule)        + "[00;00m");
 				rules.add(rule);
 			}
 			// break;
@@ -294,7 +236,7 @@ public class ClassificationResource {
 		};
 
 		Collections.sort(rules, cmp);
-		logger.debug("[01;03;31m" + "multiple rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
+		//logger.debug("[01;03;31m" + "multiple rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules) + "[00;00m");
 
 		Set<String> distinctRules = new HashSet<String>(rules);
 		rules                     = new ArrayList<String>(distinctRules);
@@ -308,10 +250,10 @@ public class ClassificationResource {
 
 		Collections.sort(sessions, cmp);
 
-		logger.debug("[01;03;33m" + "ruleset count: "      + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules.size())    + "[00;00m");
-		logger.debug("[01;03;31m" + "distinct rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules)           + "[00;00m");
-		logger.debug("[01;03;31m" + "session count: "      + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(sessions.size()) + "[00;00m");
-		logger.debug("[01;03;31m" + "distinct sessions:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(sessions)        + "[00;00m");
+		//logger.debug("[01;03;33m" + "ruleset count: "      + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules.size())    + "[00;00m");
+		//logger.debug("[01;03;31m" + "distinct rulesets:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rules)           + "[00;00m");
+		//logger.debug("[01;03;31m" + "session count: "      + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(sessions.size()) + "[00;00m");
+		//logger.debug("[01;03;31m" + "distinct sessions:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(sessions)        + "[00;00m");
 
 		// Check to see if rulesets' identifiers exist in MongoDB and create them if they don't
 
@@ -460,16 +402,21 @@ public class ClassificationResource {
 	public Map<String, Object> classifyDataset(@PathParam("rulesetId") Integer rulesetId, Dataset dataset) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
-		logger.printf(DEBUG, "%s%22s%d%s", "[01;03;35m", "passed-in ruleset id: ", rulesetId, "[00;00m");
+		logger.printf(DEBUG, "%s%22s%d%s", "[01;03;35m", "=============passed-in ruleset id: ", rulesetId, "[00;00m");
+		logger.printf(DEBUG, "%s%22s%d%s", "[01;03;35m", "==========food.cfgcode ", foods.get(0).getCfgCode(), "[00;00m");
+		logger.printf(DEBUG, "%s%22s%d%s", "[01;03;35m", "===========food.cfgtire ", foods.get(0).getTier(), "[00;00m");
 		// logger.debug("[01;03;35m" + "dataset passed in:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(dataset) + "[00;00m");
 
 		if (rulesetId == 0) {
 			rulesetId = getProductionRulesetId();
 		}
+		
+		if (rulesetId == null)
+			logger.error("Mogondb get product Ruleset Id null");
 
-		foods = FlagsEngine      .flagsEngine      .setReleaseIdAndRuleset(this.releaseId, rulesetId.toString()) .setFlags (foods); // Step 1: RA Adjustment
-		foods = InitEngine       .initEngine       .setReleaseIdAndRuleset(this.releaseId, rulesetId.toString()) .setInit  (foods); // Step 2: Threshold Rule
-		foods = AdjustmentEngine .adjustmentEngine .setReleaseIdAndRuleset(this.releaseId, rulesetId.toString()) .adjust   (foods); // Step 3: Adjustments
+		foods = FlagsEngine      .flagsEngine      .setReleaseIdAndRuleset(getRuleFilePath(), rulesetId.toString()) .setFlags (foods); // Step 1: RA Adjustment
+		foods = InitEngine       .initEngine       .setReleaseIdAndRuleset(getRuleFilePath(), rulesetId.toString()) .setInit  (foods); // Step 2: Threshold Rule
+		foods = AdjustmentEngine .adjustmentEngine .setReleaseIdAndRuleset(getRuleFilePath(), rulesetId.toString()) .adjust   (foods); // Step 3: Adjustments
 		foods = prepareCfgCode(foods);
 
 		List<CanadaFoodGuideDataset> foodResults = foods;
@@ -724,7 +671,7 @@ public class ClassificationResource {
 		logger.debug("[01;03;31m" + "new mongo connectivity test: " + mongoClient.getDatabase(MongoClientFactory.getDatabase()).runCommand(new Document("buildInfo", 1)).getString("version") + "[00;00m");
 		return map;
 	}
-
+	
 	private List<CanadaFoodGuideDataset> prepareCfgCode(List<CanadaFoodGuideDataset> foods) {
 		for (CanadaFoodGuideDataset food : foods) {
 			Integer temp = food.getCfgCode();
@@ -742,4 +689,20 @@ public class ClassificationResource {
 		}
 		return null;
 	}
+	
+	private String getRuleFilePath() {
+		
+		String ruleFilePath = null;
+		try {
+			InitialContext context = new InitialContext();
+			Context xmlNode = (Context) context.lookup("java:comp/env");
+			ruleFilePath = (String) xmlNode.lookup("ruleFilePath");
+			
+		}catch(Exception ex) {
+			logger.error("Can't find ruleFilePath..." + ex);
+		}
+		return ruleFilePath;
+	}
+	
+	
 }

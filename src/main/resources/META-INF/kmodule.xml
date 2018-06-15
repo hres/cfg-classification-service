@@ -1,2 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"/>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+<!--  
+	<kbase
+		name="dtables" packages="dtables.init.5" >
+		<ksession name="ksession-dtables" >
+		</ksession>
+	</kbase>
+	<kbase
+		name="dtables001" packages="dtables.init.7" >
+		<ksession name="ksession-dtables-001" >
+		</ksession>
+	</kbase>
+	-->
+</kmodule>
