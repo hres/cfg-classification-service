@@ -171,14 +171,8 @@ public class ClassificationResource {
 				packageName = "dtables.tier";
 				sessionName = "ksession-process-" + ruleSetId + "-" + rule;
 				
-				//KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(baseName).addPackage(packageName).setDeclarativeAgenda(ENABLED);
-				//wma teset
-				KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(baseName);
-				kieBaseModel.addPackage(packageName);
+				KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(baseName).addPackage(packageName).setDeclarativeAgenda(ENABLED);
 				
-				kieBaseModel.addInclude(baseName);
-				kieBaseModel.newKieSessionModel(sessionName);
-				//wma atest over
 				if (productionRulesetId.equals(ruleSetId)) {
 					kieBaseModel.setDefault(true);
 				}
