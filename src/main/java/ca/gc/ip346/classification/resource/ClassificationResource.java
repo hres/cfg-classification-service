@@ -6,8 +6,6 @@ import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.currentDate;
 import static com.mongodb.client.model.Updates.set;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +54,9 @@ import com.mongodb.client.MongoCursor;
 import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
 import ca.gc.ip346.classification.model.Dataset;
 import ca.gc.ip346.classification.model.Ruleset;
+import ca.gc.ip346.classification.resource.AdjustmentEngine;
+import ca.gc.ip346.classification.resource.FlagsEngine;
+import ca.gc.ip346.classification.resource.InitEngine;
 import ca.gc.ip346.util.MongoClientFactory;
 import ca.gc.ip346.util.RuleSets;
 
@@ -130,7 +131,9 @@ public class ClassificationResource {
 			for (String rule : rools) {
 				String name = "dtables." + rule + "." + rulesetId;
 				String session = "ksession-process-" + rulesetId + "-" + rule;
-				KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(name).addPackage(name).setDeclarativeAgenda(ENABLED);
+				String pkgName = "dtables." + rule + ".sub" + rulesetId; //working for classpath and opt file system 
+				//KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(name).addPackage(name).setDeclarativeAgenda(ENABLED); //problem on rule fire 
+				KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(name).addPackage(pkgName).setDeclarativeAgenda(ENABLED); 
 				if (productionRulesetId.equals(rulesetId)) {
 					kieBaseModel.setDefault(true);
 				}
@@ -147,12 +150,11 @@ public class ClassificationResource {
 			for (String rule : rools) {
 				for (int i = 0; i < 16; ++i) {
 					String file = "/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls";
+					String resourcePath = "src/main/resources/dtables/" + rule + "/" + "sub" + (i + 1) + "/" + rule +  (i + 1) + ".xls";
 					logger.debug(file);
 					// logger.debug("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls");
-					// kfs.write(ks.getResources().newFileSystemResource("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls"));
-					// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + ".xls", ks.getResources().newInputStreamResource(new FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls")));
-					kfs.write(file, ks.getResources().newInputStreamResource(new BufferedInputStream(new FileInputStream(file))));
-					// kfs.write(file, ks.getResources().newInputStreamResource(this.getClass().getResourceAsStream(file)));
+					// kfs.write(file, ks.getResources().newInputStreamResource(new BufferedInputStream(new FileInputStream(file)))); //problem on rule fire
+					kfs.write(resourcePath,ks.getResources().newFileSystemResource(file));
 				}
 			}
 			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/1/refamt.xls",          ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/refamt/1/refamt.xls")          )));
@@ -251,7 +253,7 @@ public class ClassificationResource {
 			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/14/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/14/tier.xls")             )));
 			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/15/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/15/tier.xls")             )));
 			// kfs.write("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/16/tier.xls",             ks.getResources() .newInputStreamResource( new BufferedInputStream( FileInputStream("/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/tier/16/tier.xls")             )));
-		} catch(FileNotFoundException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
 		}
