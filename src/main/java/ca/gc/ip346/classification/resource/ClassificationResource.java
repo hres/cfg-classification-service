@@ -153,7 +153,7 @@ public class ClassificationResource {
 			for (String rule : rools) {
 				for (int i = 0; i < 16; ++i) {
 					file = "/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls";
-					pName = "src/main/resources/dtables/" + rule + "/" + (i + 1) + "/" + rule + (i + 1) + ".xls";;
+					pName = "src/main/resources/" + rule + "/"  + rule + (i + 1) + ".xls";;
 					kfs.write(ks.getResources().newFileSystemResource(file)
 							.setResourceType(ResourceType.DTABLE));
 				}
@@ -168,17 +168,11 @@ public class ClassificationResource {
 			ruleSetId = i + 1;
 			for (String rule : rools) {
 				baseName = "dtables." + rule + "." + ruleSetId;
-				packageName = "dtables.tier";
+				packageName = rule;
 				sessionName = "ksession-process-" + ruleSetId + "-" + rule;
 				
-				//KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(baseName).addPackage(packageName).setDeclarativeAgenda(ENABLED);
-				//wma teset
-				KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(baseName);
-				kieBaseModel.addPackage(packageName);
+				KieBaseModel kieBaseModel = kieModuleModel.newKieBaseModel(baseName).addPackage(packageName).setDeclarativeAgenda(ENABLED);
 				
-				kieBaseModel.addInclude(baseName);
-				kieBaseModel.newKieSessionModel(sessionName);
-				//wma atest over
 				if (productionRulesetId.equals(ruleSetId)) {
 					kieBaseModel.setDefault(true);
 				}
@@ -223,7 +217,7 @@ public class ClassificationResource {
 				sessions.add(session);
 				//logger.debug("[01;03;31m" + "session to string:\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(session.toString())        + "[00;00m");
 				String rule = session.replaceAll(pattern, "$1");
-				logger.debug("========rule name......[01;03;31m" + "session.replaceAll():\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rule)        + "[00;00m");
+				//logger.debug("========rule name......[01;03;31m" + "session.replaceAll():\n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(rule)        + "[00;00m");
 				rules.add(rule);
 			}
 			// break;
