@@ -2,7 +2,9 @@
 
 This project provides the Food Classification REST Service.
 The service uses Drools Decision Table to implement the classification rules.
-This service along with the [CFG Task Service] run in tandem.
+This service along with the [CFG Task Service] run in tandem. 
+
+This branch fixed the issue of CFG classification result always being classified tier 4   
 
 ## Components and Features
 
@@ -27,6 +29,8 @@ To deploy [cfg-classification-service], do the following:
 ## Configure Drools
 
 Follow the instructions in [cfg-classification-rulesets] to setup classification-rules resources.
+
+Also use wendy branch of [cfg-classification-rulesets] for the fixes of CFG classification issue above.   
 
 ## Confirm Service is Running
 
