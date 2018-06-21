@@ -121,13 +121,6 @@ public class InitEngine {
 			//KieSession kSession = kContainer.getKieSession(kbconf);
 			KieBase kbase = kContainer.getKieBase();
 			
-			//get rule
-			logger.debug("Get Rule : " + kbase.getKiePackages().size());
-	        for ( KiePackage kp : kbase.getKiePackages() ) {
-	            for (Rule rule : kp.getRules()) {
-	            	logger.debug("Get Rule From InitEngine App==================" + kp + " rule name: " + rule.getName());
-	            }
-	        }
 			kieSession = kbase.newKieSession();
 			System.out.println("Init Put rules KieBase into Custom Cache============");
 			kieBaseCache.put(kieSessionName, kbase);

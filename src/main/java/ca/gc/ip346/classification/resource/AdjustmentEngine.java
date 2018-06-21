@@ -28,6 +28,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
@@ -49,9 +50,8 @@ public class AdjustmentEngine {
 	//wma add as test
 	public class TrackingAgendaEventListener extends DefaultAgendaEventListener  {
 
+	    private final Logger log = LogManager.getLogger(AdjustmentEngine.class);
 	    //private static Logger log = LoggerFactory.getLogger(TrackingAgendaEventListener.class);
-	    private  final Logger log = LogManager.getLogger(AdjustmentEngine.class);
-	    
 	    private List<Match> matchList = new ArrayList<Match>();
 	    
 	    @Override
@@ -161,18 +161,13 @@ public class AdjustmentEngine {
 				System.out.println(kieBuilder.getResults().toString());
 			}
 			KieContainer kContainer = ks.newKieContainer(kieBuilder.getKieModule().getReleaseId());
-			//KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
-			//KieSession kSession = kContainer.getKieSession(kbconf);
+			
 			KieBase kbase = kContainer.getKieBase();
 			
-			//get rule
-			logger.debug("Get Rule : " + kbase.getKiePackages().size());
-	        for ( KiePackage kp : kbase.getKiePackages() ) {
-	            for (Rule rule : kp.getRules()) {
-	            	logger.debug("Get Rule From AjustmentEngine App==================" + kp + " rule name: " + rule.getName());
-	            }
-	        }
 			kieSession = kbase.newKieSession();
+			AgendaEventListener agendaEventListener = new TrackingAgendaEventListener();
+			kieSession.addEventListener(agendaEventListener);
+			
 			System.out.println("Adjustment Put rules KieBase into Custom Cache=============");
 			kieBaseCache.put(kieSessionName, kbase);
 		}else {
@@ -183,43 +178,6 @@ public class AdjustmentEngine {
 		
 	}
 	
-	private void doTest(CanadaFoodGuideDataset food) {
-		try {
-            // load up the knowledge base from classpath
-           KieServices ks = KieServices.Factory.get();
-            KieContainer kContainer = ks.getKieClasspathContainer();
-            KieSession kSession = kContainer.newKieSession("ksession-dtables");
-            KieBase kieBase = kSession.getKieBase();
-            for ( KiePackage kp : kieBase.getKiePackages() ) {
-                for (Rule rule : kp.getRules()) {
-                	logger.debug("Get Rule from test do....===================kp " + kp + " rule " + rule.getName());
-                }
-            }
-            
-            kSession = kContainer.newKieSession("ksession-dtables-001");
-            kieBase = kSession.getKieBase();
-            for ( KiePackage kp : kieBase.getKiePackages() ) {
-                for (Rule rule : kp.getRules()) {
-                	logger.debug("Get Rule from test do....===================kp001 " + kp + " rule " + rule.getName());
-                }
-            }
-            
-            //CustomerRuleObject customerRule = new CustomerRuleObject();
-             
-            //customerRule.setFirstName("Deepak");
-            kSession.insert(food);
-            System.out.println("do test Adjust.....fact count again: " + kSession.getFactCount() + "条规则");
-            kSession.fireAllRules();
-            int ruleFiredCount = kSession.fireAllRules();
-			
-			System.out.println("doTest Adjust.....触发了" + ruleFiredCount + "条规则");
-		
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-	}
-
 	/*
 	 * Function: fireDrools
 	 *  Purpose: fire the drools rules and calculate
@@ -227,7 +185,6 @@ public class AdjustmentEngine {
 	 */
 	private void fireDrools(List<CanadaFoodGuideDataset> foods) {
 		KieSession kieSession = null;
-		//KieServices ks          = KieServices.Factory.get();
 		
 		for (CanadaFoodGuideDataset food : foods) {
 			for (int i = 0; i < kieSessionPipeline.size(); i++) {

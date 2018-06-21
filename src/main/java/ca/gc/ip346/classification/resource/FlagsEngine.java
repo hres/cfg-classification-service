@@ -115,13 +115,6 @@ public class FlagsEngine {
 			//KieSession kSession = kContainer.getKieSession(kbconf);
 			KieBase kbase = kContainer.getKieBase();
 			
-			//get rule
-			logger.debug("Get Rule : " + kbase.getKiePackages().size());
-	        for ( KiePackage kp : kbase.getKiePackages() ) {
-	            for (Rule rule : kp.getRules()) {
-	            	logger.debug("Flags Get Rule From FlagsEngine App==================" + kp + " rule name: " + rule.getName());
-	            }
-	        }
 			kieSession = kbase.newKieSession();
 			System.out.println("Flags Put rules KieBase into Custom Cache=============");
 			kieBaseCache.put(kieSessionName, kbase);
