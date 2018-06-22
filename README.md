@@ -15,9 +15,7 @@ To deploy [cfg-classification-service], do the following:
 3. `cd cfg-classification-service`
 4. `mvn clean install`
 5. copy `target/cfg-classification-service.war` to `webapps` directory of [Tomcat 8.0 on HRES]
-6. Add rule file path 
-<Environment name="ruleFilePath" value="/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" 
-		type="java.lang.String" override="false"/>
+6. Add rule file path `<Environment name="ruleFilePath" value="/opt/ruleset/cfg-classification-rulesets/rulesets/dtables/" type="java.lang.String" override="false"/>`
 	to Tomcat content.xml
 
 ~~## Configure MongoDB~~
