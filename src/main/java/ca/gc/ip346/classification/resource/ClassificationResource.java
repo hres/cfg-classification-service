@@ -267,7 +267,7 @@ public class ClassificationResource {
 				// TODO: firstLevelSets.add(currentDate("modifiedDate"));
 				slots.updateOne(eq("rulesetId", Integer.valueOf(id)), combine(firstLevelSets));
 			}
-			msg.put("message", "Successfully updated ruleset with id: " + id);
+			msg.put("message", "Successfully updated production ruleset with id: " + id);
 		}
 
 		return msg;
@@ -277,7 +277,7 @@ public class ClassificationResource {
 	@Path("/rulesets/{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public /* Response */ Map<String, Object> deleteRuleset(@PathParam("id") String id) {
+	public Map<String, Object> deleteRuleset(@PathParam("id") String id) {
 		Map<String, Object> msg = new HashMap<String, Object>();
 		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id)).append("isProd", false).append("active", true)).iterator();
 		List<Bson> firstLevelSets = new ArrayList<Bson>();
@@ -299,7 +299,7 @@ public class ClassificationResource {
 	@Path("/rulesets")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
-	public /* Response */ Map<String, String> deleteAllRulesets() {
+	public Map<String, String> deleteAllRulesets() {
 		slots.deleteMany(new Document());
 
 		mongoClient.close();
