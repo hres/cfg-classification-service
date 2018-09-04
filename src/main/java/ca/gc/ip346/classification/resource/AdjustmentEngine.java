@@ -196,11 +196,11 @@ public class AdjustmentEngine {
 					
 					System.out.println("Adjust.food....触发了" + ruleFiredCount + "条规则");
 					
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;31m", "how many rulesets: "                   , kieSessionPipeline.size()           , "[00;00m");
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getReferenceAmountG(): "          , food.getReferenceAmountG()          , "[00;00m");
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getOverrideSmallRaAdjustment(): " , food.getOverrideSmallRaAdjustment() , "[00;00m");
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getAdjustedReferenceAmount(): "   , food.getAdjustedReferenceAmount()   , "[00;00m");
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getFopAdjustedReferenceAmount(): ", food.getFopAdjustedReferenceAmount(), "[00;00m");
+//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;31m", "how many rulesets: "                   , kieSessionPipeline.size()           , "[00;00m");
+//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getReferenceAmountG(): "          , food.getReferenceAmountG()          , "[00;00m");
+//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getOverrideSmallRaAdjustment(): " , food.getOverrideSmallRaAdjustment() , "[00;00m");
+//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getAdjustedReferenceAmount(): "   , food.getAdjustedReferenceAmount()   , "[00;00m");
+//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getFopAdjustedReferenceAmount(): ", food.getFopAdjustedReferenceAmount(), "[00;00m");
 					
 				}
 			}

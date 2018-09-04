@@ -194,6 +194,7 @@ public class ClassificationResource {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, Object> getRuleset(@PathParam("id") String id) {
+		System.out.println("go into get relse....");
 		Map<String, Object> map = new HashMap<String, Object>();
 		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id))).iterator();
 		while (cursorDocMap.hasNext()) {
@@ -204,15 +205,16 @@ public class ClassificationResource {
 			Boolean isProd    = (Boolean)doc.get("isProd");
 			Boolean active    = (Boolean)doc.get("active");
 
-			map.put("id", identity.toString());
-			map.put("name", name);
-			map.put("rulesetId", rulesetId);
-			map.put("isProd", isProd);
-			map.put("active", active);
+			//map.put("id", identity.toString());
+			//map.put("name", name);
+			//map.put("rulesetId", rulesetId);
+			//map.put("isProd", isProd);
+			//map.put("active", active);
+			map.put("message", "Ruleset info:  Name: " + name + " /ID: " + id + "   test eye rule");
 		}
 
 		mongoClient.close();
-
+		System.out.println("get rule map" + map);
 		return map;
 	}
 
@@ -233,7 +235,7 @@ public class ClassificationResource {
 			firstLevelSets.add(set("isProd", ruleset.getIsProd()));
 			slots.updateOne(eq("rulesetId",  ruleset.getRulesetId()), combine(firstLevelSets));
 
-			msg.put("message", "Successfully created ruleset with ID: " + ruleset.getRulesetId().toString());
+			msg.put("message", "Successfully created ruleset with Name: " + ruleset.getName() + " /ID: "+ ruleset.getRulesetId().toString());
 		}
 		return msg;
 	}
@@ -294,6 +296,8 @@ public class ClassificationResource {
 
 		return msg;
 	}
+	
+	
 
 	@DELETE
 	@Path("/rulesets")
@@ -330,6 +334,7 @@ public class ClassificationResource {
 		MongoCursor<Document> cursorDocMap = null;
 		for (String rule : rules) {
 			cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(rule)).append("active", false)).iterator();
+			System.out.println("cursorDocMap..." + cursorDocMap.toString());
 			while (cursorDocMap.hasNext()) {
 				Document doc = cursorDocMap.next();
 				slot         = (Integer)doc.get("rulesetId");
@@ -339,6 +344,7 @@ public class ClassificationResource {
 				break;
 			}
 		}
+		
 		map.put("slot", slot);
 
 		mongoClient.close();
