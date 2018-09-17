@@ -68,27 +68,27 @@ public class FlagsEngine {
 	 *       in: foods
 	 */
 	private void fireDrools(List<CanadaFoodGuideDataset> foods) {
+		int numFact = 0;
+		KieSession kieSession = null;
+		
 		for (CanadaFoodGuideDataset food : foods) {
 			food.setClassifiedCfgCode(food.getCfgCode());
-			prepare(food);
+			prepare(food);		
+			numFact++;
 			// boolean setRA = false;
 			for (int i = 0; i < kieSessionPipeline.size(); i++) {
 				if (!food.isDone()) {
-// logger.debug("[01;03;31m" + "HERE: \n" + new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting().create().toJson(food) + "[00;00m");
+					kieSession = kieSessionPipeline.get(i);
+					kieSession.insert(food);
+					int ruleFiredCount = kieSession.fireAllRules();
 					
-					kieSessionPipeline.get(i).insert(food);
-					kieSessionPipeline.get(i).fireAllRules();
-					
+					System.out.println("Refamt...." + "Food Fact (" + numFact + ") " + ".....触发了" + ruleFiredCount + "条规则");
 					/* only call this after adjustedRA is set */
 					calculatePerRA(food);
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "how many rulesets: "                   , kieSessionPipeline.size()           , "[00;00m");
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getReferenceAmountG(): "          , food.getReferenceAmountG()          , "[00;00m");
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getOverrideSmallRaAdjustment(): " , food.getOverrideSmallRaAdjustment() , "[00;00m");
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getAdjustedReferenceAmount(): "   , food.getAdjustedReferenceAmount()   , "[00;00m");
-					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getFopAdjustedReferenceAmount(): ", food.getFopAdjustedReferenceAmount(), "[00;00m");
+					
 				}
 			}
-			logger.debug("[01;03;31m" + "firing Drools" + "[00;00m");
+			
 			foodResults.add(food);
 		}
 	}
@@ -116,10 +116,9 @@ public class FlagsEngine {
 			KieBase kbase = kContainer.getKieBase();
 			
 			kieSession = kbase.newKieSession();
-			System.out.println("Flags Put rules KieBase into Custom Cache=============");
+			
 			kieBaseCache.put(kieSessionName, kbase);
 		}else {
-			System.out.println("Get existing rules KieBase from Init=================Custom Cache");
 			kieSession = kieBaseCache.get(kieSessionName).newKieSession();
 		}
 		return kieSession;

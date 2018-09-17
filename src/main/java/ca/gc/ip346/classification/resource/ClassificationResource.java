@@ -40,7 +40,7 @@ import ca.gc.ip346.classification.model.CanadaFoodGuideDataset;
 import ca.gc.ip346.classification.model.Dataset;
 import ca.gc.ip346.classification.model.Ruleset;
 import ca.gc.ip346.util.MongoClientFactory;
-import ca.gc.ip346.util.RuleSets;
+//import ca.gc.ip346.util.RuleSets;
 
 @Path("/")
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -130,11 +130,8 @@ public class ClassificationResource {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CanadaFoodGuideDataset> foods = dataset.getData();
 		
-		logger.error("current RuleSet Id: ================" + rulesetId);
-		
 		if (rulesetId == 0) {
 			rulesetId = getProductionRulesetId();
-			logger.error("get Production RuleSet Id: ================" + rulesetId);
 		}
 		
 		if (rulesetId == null)
@@ -274,6 +271,37 @@ public class ClassificationResource {
 
 		return msg;
 	}
+	
+	@PUT
+	@Path("/rulesets/{id}/{name}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
+	public Map<String, Object> renameRuleset(@PathParam("id") String id, @PathParam("name") String name, Ruleset ruleset) {
+		Map<String, Object> msg = new HashMap<String, Object>();
+		MongoCursor<Document> cursorDocMap = slots.find(new Document("rulesetId", Integer.valueOf(id)).append("active", true)).iterator();
+		List<Bson> firstLevelSets = new ArrayList<Bson>();
+		int changes = 0;
+
+		if (!cursorDocMap.hasNext()) {
+			msg.put("message", "Failed to rename ruleset with id: " + id);
+		} else {
+			Document doc = cursorDocMap.next();
+			if (ruleset.getName() != null && !ruleset.getName().equals(doc.get("name"))) {
+				firstLevelSets.add(set("name", name));
+				++changes;
+			}
+
+			if (changes != 0) {
+				// TODO: firstLevelSets.add(currentDate("modifiedDate"));
+				slots.updateOne(eq("rulesetId", Integer.valueOf(id)), combine(firstLevelSets));
+			}
+			msg.put("message", "Successfully rename  ruleset with id: " + id);
+		}
+
+		return msg;
+	}
+
 
 	@DELETE
 	@Path("/rulesets/{id}")
@@ -320,7 +348,8 @@ public class ClassificationResource {
 	// @JacksonFeatures(serializationEnable = {SerializationFeature.INDENT_OUTPUT})
 	public Map<String, String> getRulesetsHome() {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("rulesetshome", RuleSets.getHome());
+		//map.put("rulesetshome", RuleSets.getHome());
+		map.put("rulesetshome", getRuleFilePath());
 		return map;
 	}
 

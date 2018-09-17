@@ -72,29 +72,32 @@ public class InitEngine {
 	 */
 	private void fireDrools(List<CanadaFoodGuideDataset> foods) {
 		KieSession kieSession = null;
+		int numFact = 0;
 		for (CanadaFoodGuideDataset food : foods) {
-
 			prepare(food);
-
+			numFact++;
 			for (int i = 0; i < kieSessionPipeline.size(); i++) {
 				if (!food.isDone()) {
-					kieSessionPipeline.get(i).insert(food);
 					
 					kieSession = kieSessionPipeline.get(i);
-					
+					kieSession.insert(food);
 					int ruleFiredCount = kieSession.fireAllRules();
 					
-					System.out.println("Initila.........触发了" + ruleFiredCount + "条规则");
+					if( i == 0)
+						System.out.println("Fop...." + "Food Fact (" + numFact + ") " + ".....触发了" + ruleFiredCount + "条规则");
+					if( i == 1)
+						System.out.println("ShortCut...." + "Food Fact (" + numFact + ") " + ".....触发了" + ruleFiredCount + "条规则");
+					if( i == 2)
+						System.out.println("Thresholds...." + "Food Fact (" + numFact + ") " + ".....触发了" + ruleFiredCount + "条规则");
+					if( i == 3)
+						System.out.println("Init...." + "Food Fact (" + numFact + ") " + ".....触发了" + ruleFiredCount + "条规则");
 
-					logger.debug("[01;03;31m" + kieSessionPipeline.size() + "[00;00m");
 				}
 			}
 			
-			logger.debug("[01;03;31m" + "Final==========CFG code: " + food.getCfgCode() + " ====tier: " + food.getTier() + "[00;00m");
 			String firstThreeDigits = food.getCfgCode() + "";
 			food.setInitialCfgCode(Integer.parseInt(firstThreeDigits.substring(0, 3) + food.getTier()));
-			logger.debug("[01;03;31m" + "Fianl=======initial CFG code: " + food.getInitialCfgCode() + "[00;00m");
-
+		
 			foodResults.add(food);
 		}
 	}

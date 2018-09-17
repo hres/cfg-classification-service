@@ -185,33 +185,20 @@ public class AdjustmentEngine {
 	 */
 	private void fireDrools(List<CanadaFoodGuideDataset> foods) {
 		KieSession kieSession = null;
-		
+		int numFact = 0;
 		for (CanadaFoodGuideDataset food : foods) {
+			numFact++;
 			for (int i = 0; i < kieSessionPipeline.size(); i++) {
 				if (!food.isDone()) {
 					kieSession = kieSessionPipeline.get(i);
 					kieSession.insert(food);
 					
-					int ruleFiredCount = kieSession.fireAllRules();
-					
-					System.out.println("Adjust.food....触发了" + ruleFiredCount + "条规则");
-					
-//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;31m", "how many rulesets: "                   , kieSessionPipeline.size()           , "[00;00m");
-//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getReferenceAmountG(): "          , food.getReferenceAmountG()          , "[00;00m");
-//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getOverrideSmallRaAdjustment(): " , food.getOverrideSmallRaAdjustment() , "[00;00m");
-//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getAdjustedReferenceAmount(): "   , food.getAdjustedReferenceAmount()   , "[00;00m");
-//					logger.printf(DEBUG, "%s%44s%s%s", "[01;03;33m", "food.getFopAdjustedReferenceAmount(): ", food.getFopAdjustedReferenceAmount(), "[00;00m");
-					
+					int ruleFiredCount = kieSession.fireAllRules();						
+					System.out.println("Adjust.food...." + "Food Fact (" + numFact + ") " + ".....触发了" + ruleFiredCount + "条规则");
 				}
 			}
-			logger.debug("[01;03;31m" + "firing Drools" + "[00;00m");
-
-
-			logger.debug("[01;03;31m" + "Fianl======= before set CFG code: " + food.getCfgCode() + "[00;00m");
-			logger.debug("[01;03;31m" + "Fianl======= CFG Tier: " + food.getTier() + "[00;00m");
+			
 			food.setCfgCode(Integer.parseInt(String.valueOf(food.getCfgCode()).substring(0, 3) + food.getTier()));
-			logger.debug("[01;03;31m" + "Fianl======= CFG code: " + food.getCfgCode() + "[00;00m");
-
 			foodResults.add(food);
 		}
 	}
